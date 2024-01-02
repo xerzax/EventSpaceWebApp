@@ -1,0 +1,48 @@
+﻿<!-- MyApp.Client/Pages/ShowBlogs.razor -->
+@page "/blog"
+@inject HttpClient httpClient
+@using EventSpace.Shared;
+
+
+
+<h3>Blogs</h3>
+
+@if (blogs != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>PhotoName</th>
+            </tr>
+        </thead>
+        <tbody>
+         @*    @foreach (var blog in blogs)
+            {
+                <tr>
+                    <td>@blog.Id</td>
+                    <td>@blog.Title</td>
+                    <td>@blog.Content</td>
+                    <td>@blog.PhotoName</td>
+                </tr>
+            } *@
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No blogs available.</p>
+}
+
+@code {
+
+    List<EventSpace.Shared.Entities.Post.Blog> blogs = new List<EventSpace.Shared.Entities.Post.Blog>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        blogs = await httpClient.GetFromJsonAsync< List<EventSpace.Shared.Entities.Post.Blog>>("api/Post/GetBlogs");
+    }
+}
