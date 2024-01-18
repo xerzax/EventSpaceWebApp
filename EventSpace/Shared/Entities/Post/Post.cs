@@ -9,24 +9,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace EventSpace.Shared.Entities.Post
 {
-    public class Post
+    public class Post  :BaseEntity
     {
         public int Id { get; set; }
-
-        //[Required(ErrorMessage = "Title is required")]
-
         public string? Title { get; set; }
         public string? PhotoName { get; set; }
 
-        //public int UserId { get; set; }
-
-        //[ForeignKey("UserId")]
-        //public SuperHero AppUser { get; set; }
-
-
         [NotMapped]
-        [Required(ErrorMessage = "Photo is required")]
-
         public IFormFile? PhotoUrl { get; set; }
     }
 }

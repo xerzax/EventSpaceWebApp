@@ -14,14 +14,11 @@ namespace EventSpace.Server.Data
             DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
+
         }
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-            builder.Entity<ApplicationUser>().Navigation(e => e.SuperHeroes).AutoInclude();
-        }
-        public DbSet<SuperHero> SuperHeroes => Set<SuperHero>();
+        
         public DbSet<Blog> Blog => Set<Blog>();
+        public DbSet<Photo> Photo => Set<Photo>();
 
 
 

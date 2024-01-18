@@ -17,29 +17,63 @@ namespace EventSpace.Server.Controllers
         }
 
         [HttpGet("GetBlogs")]
-        public ActionResult<IEnumerable<Blog>> Get()
+        public ActionResult<IEnumerable<Blog>> GetAllBlogs()
         {
             return Ok(_context.Blog.ToList());
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Blog> GetBlog(int id)
+        [HttpGet("GetBlogById/{id}")]
+        public ActionResult<Blog> GetBlogById(int id)
         {
-            var employee = _context.Blog.FirstOrDefault(e => e.Id == id);
-            if (employee == null)
+            var blogById = _context.Blog.FirstOrDefault(e => e.Id == id);
+            if (blogById == null)
                 return NotFound();
-
-            return Ok(employee);
+            return Ok(blogById);
         }
 
+        [HttpPost("CheckBlog")]
+		public ActionResult CheckMethod([FromBody] Blog blog)
+		{
+			return Ok("abc");
 
-        [HttpPost]
-        public ActionResult<Blog> PostBlog(Blog blog)
+			return CreatedAtAction(nameof(GetBlogById), new { id = blog.Id }, blog);
+		}
+
+
+		[HttpPost("PostBlog")]
+        public ActionResult<Blog> PostBlog([FromForm]Blog blog)
         {
             _context.Blog.Add(blog);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetBlog), new { id = blog.Id }, blog);
+			return CreatedAtAction(nameof(GetBlogById), new { id = blog.Id }, blog);
+		}
+
+		[HttpGet("GetPhotos")]
+        public ActionResult<IEnumerable<Photo>> GetAllPhotos()
+        {
+            return Ok(_context.Photo.ToList());
         }
+
+		[HttpGet("GetPhotoById/{id}")]
+
+		public ActionResult<Photo> GetPhotoById(int id)
+        {
+            var photoById = _context.Photo.FirstOrDefault(e => e.Id == id);
+            if(photoById == null)
+            {
+                return NotFound();
+            }
+            return Ok(photoById);
+        }
+
+        [HttpPost("PostPhoto")]
+        public ActionResult<Photo> PostPhoto([FromForm]Photo photo)
+        {
+            _context.Photo.Add(photo);
+            _context.SaveChanges();
+            return CreatedAtAction(nameof(GetBlogById), new { id = photo.Id }, photo);
+        }
+
     }
 }

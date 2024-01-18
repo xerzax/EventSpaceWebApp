@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EventSpace.Shared.Entities.Post
+namespace EventSpace.Shared.DTOs
 {
-    public class Blog: Post
+    public class BlogDTO
     {
-        [Required(ErrorMessage = "Content is required")]
-
+        public string Title { get; set; }
         public string Content { get; set; }
+
     }
 }
