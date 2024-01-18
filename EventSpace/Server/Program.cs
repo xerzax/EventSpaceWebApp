@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using EventSpace.Server.Implementation;
+using EventSpace.Shared.Interfaces;
+using EventSpace.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +24,9 @@ builder.Services.AddIdentityServer()
 
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
+
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IBlogService, BlogService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
