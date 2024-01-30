@@ -1,6 +1,8 @@
 ﻿using Application.Interfaces.Repository;
+using Application.Interfaces.Services;
 using Infrastructure.Data;
 using Infrastructure.Implementation.Repository;
+using Infrastructure.Implementation.Services;
 using Infrastructure.Persistence.Seed;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +28,7 @@ namespace Infrastructure.Dependency
 			services.AddScoped<IDbInitializer, DbInitializer>();
 
 			services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+			services.AddScoped<IEventService, EventService>();
 
 			return services;
 		}

@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Domain.Entity.Event;
+using Domain.Entity.Post;
 using EventSpaceApi.Domain.Entity.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -37,12 +38,18 @@ namespace Infrastructure.Data
 		public DbSet<RoleClaims> RoleClaims { get; set; }
 
 		public DbSet<Event> Events { get; set; }
-		
+
 		public DbSet<EventWishlist> Eventwishlists { get; set; }
-		
+
 		public DbSet<Tier> Tiers { get; set; }
-		
+
 		public DbSet<Donation> Donations { get; set; }
+
+		/*public DbSet<Post> Posts { get; set; }*/
+		public DbSet<Blog> Blogs { get; set; }
+		public DbSet<Photo> Photos { get; set; }
+		public DbSet<Playlist> Playlists { get; set; }
+		public DbSet<Song> Songs { get; set; }
 		#endregion
 
 		protected override void OnModelCreating(ModelBuilder builder)
@@ -64,11 +71,11 @@ namespace Infrastructure.Data
 				.WithMany()
 				.HasForeignKey(e => e.UserId)
 				.OnDelete(DeleteBehavior.Restrict);
-					builder.Entity<Donation>()
-						.HasOne(d => d.User)
-						.WithMany()
-						.HasForeignKey(d => d.UserId)
-						.OnDelete(DeleteBehavior.Restrict);
+			builder.Entity<Donation>()
+				.HasOne(d => d.User)
+				.WithMany()
+				.HasForeignKey(d => d.UserId)
+				.OnDelete(DeleteBehavior.Restrict);
 
 
 			builder.Entity<EventWishlist>()

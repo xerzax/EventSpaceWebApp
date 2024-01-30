@@ -34,6 +34,7 @@ namespace Infrastructure.Persistence.Seed
 				{
 					await _roleManager.CreateAsync(new Role(Constants.Roles.Admin));
 					await _roleManager.CreateAsync(new Role(Constants.Roles.User));
+					await _roleManager.CreateAsync(new Role(Constants.Roles.Organizer));
 				}
 				var superAdminUser = new User
 				{

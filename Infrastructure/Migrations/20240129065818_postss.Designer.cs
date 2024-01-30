@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240129065818_postss")]
+    partial class postss
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,85 +187,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Tiers");
                 });
 
-            modelBuilder.Entity("Domain.Entity.Post.Blog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PhotoName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Blog");
-                });
-
-            modelBuilder.Entity("Domain.Entity.Post.Photo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("LastUpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PhotoName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Tags")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Photo");
-                });
-
-            modelBuilder.Entity("Domain.Entity.Post.Playlist", b =>
+            modelBuilder.Entity("Domain.Entity.Post.Post", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -296,7 +220,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Playlist");
+                    b.ToTable("Post");
                 });
 
             modelBuilder.Entity("Domain.Entity.Post.Song", b =>
@@ -535,6 +459,33 @@ namespace Infrastructure.Migrations
                     b.ToTable("Tokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entity.Post.Blog", b =>
+                {
+                    b.HasBaseType("Domain.Entity.Post.Post");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("Blog");
+                });
+
+            modelBuilder.Entity("Domain.Entity.Post.Photo", b =>
+                {
+                    b.HasBaseType("Domain.Entity.Post.Post");
+
+                    b.Property<string>("Tags")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("Photo");
+                });
+
+            modelBuilder.Entity("Domain.Entity.Post.Playlist", b =>
+                {
+                    b.HasBaseType("Domain.Entity.Post.Post");
+
+                    b.ToTable("Playlist");
+                });
+
             modelBuilder.Entity("Domain.Entity.Event.Donation", b =>
                 {
                     b.HasOne("Domain.Entity.Event.Event", "Event")
@@ -595,34 +546,12 @@ namespace Infrastructure.Migrations
                     b.Navigation("Event");
                 });
 
-            modelBuilder.Entity("Domain.Entity.Post.Blog", b =>
+            modelBuilder.Entity("Domain.Entity.Post.Post", b =>
                 {
                     b.HasOne("EventSpaceApi.Domain.Entity.Identity.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Entity.Post.Photo", b =>
-                {
-                    b.HasOne("EventSpaceApi.Domain.Entity.Identity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Entity.Post.Playlist", b =>
-                {
-                    b.HasOne("EventSpaceApi.Domain.Entity.Identity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -687,6 +616,33 @@ namespace Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entity.Post.Blog", b =>
+                {
+                    b.HasOne("Domain.Entity.Post.Post", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.Entity.Post.Blog", "Id")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entity.Post.Photo", b =>
+                {
+                    b.HasOne("Domain.Entity.Post.Post", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.Entity.Post.Photo", "Id")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entity.Post.Playlist", b =>
+                {
+                    b.HasOne("Domain.Entity.Post.Post", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.Entity.Post.Playlist", "Id")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });
 

@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Entity\Todo\" />
     <Folder Include="Entity\Ticket\" />
-    <Folder Include="Entity\Post\" />
   </ItemGroup>
 
   <ItemGroup>
