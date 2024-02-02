@@ -11,8 +11,8 @@ namespace Application.Interfaces.Services
 	public interface IPhotoService
 	{
 		Task<IEnumerable<PhotoDTO>> GetAllPhotosAsync();
-		Task<PhotoDTO> GetByBlogIdAsync(int id);
-		Task<Photo> AddPhotos(Photo photos);
+		Task<PhotoDTO> GetByPhotoIdAsync(int id);
+		Task<Photo> AddPhotosAsync(Photo photos);
 		Task DeletePhotosAsync(int id);
 		Task UpdatePhotosAsync(Photo photos);
 	}

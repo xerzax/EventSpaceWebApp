@@ -13,5 +13,6 @@ namespace Domain.Entity.Post
 	{
 		/*[Required(ErrorMessage = "This field is required")]*/
 		public virtual ICollection<Song> Songs { get; set; }
+		public string UserName { get; set; }
 	}
 }

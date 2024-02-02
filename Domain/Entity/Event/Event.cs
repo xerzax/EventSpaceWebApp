@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entity.Event
 {
-	public class Event: BaseEntity
+	public class Event : BaseEntity
 	{
         public int Id { get; set; }
 

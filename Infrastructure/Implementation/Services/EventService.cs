@@ -51,7 +51,7 @@ namespace Infrastructure.Implementation.Services
 			if (evt == null) return;
 			evt.AvailableSeats -= qty;
 			evt.SoldSeats += qty;
-			if(evt.AvailableSeats <= 0 || DateTime.Now> evt.Date)
+			if (evt.AvailableSeats <= 0 || DateTime.Now > evt.Date)
 			{
 				evt.Status = EventStatus.Closed;
 			}
@@ -61,10 +61,10 @@ namespace Infrastructure.Implementation.Services
 		public async Task UpdateFundAsync(int id, int amount, int qty)
 		{
 			var evt = await _eventRepository.GetByIdAsync(id);
-			if(evt == null) return;
+			if (evt == null) return;
 			evt.AvailableSeats -= qty;
 			evt.SoldSeats += qty;
-			if(evt.AvailableSeats<=0 || DateTime.Now> evt.Date)
+			if (evt.AvailableSeats <= 0 || DateTime.Now > evt.Date)
 			{
 				evt.Status = EventStatus.Closed;
 			}

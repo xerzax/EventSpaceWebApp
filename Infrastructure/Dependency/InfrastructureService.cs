@@ -26,10 +26,11 @@ namespace Infrastructure.Dependency
 					b => b.MigrationsAssembly("Infrastructure")));
 
 			services.AddScoped<IDbInitializer, DbInitializer>();
-
 			services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 			services.AddScoped<IEventService, EventService>();
-
+			services.AddScoped<IBlogService, BlogService>();
+			services.AddScoped<IPhotoService, PhotoService>();
+			services.AddScoped<IPlaylistService, PlaylistService>();
 			return services;
 		}
 

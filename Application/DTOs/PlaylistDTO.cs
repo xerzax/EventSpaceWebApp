@@ -10,7 +10,6 @@ namespace Application.DTOs
 	{
 		public int Id { get; set; }
 		public string Title { get; set; }
-		public string PhotoName { get; set; }
 		public Guid UserId { get; set; }
 		public string UserName { get; set; }
 		public List<SongDTO> Songs { get; set; }

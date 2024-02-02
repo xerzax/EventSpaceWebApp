@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Implementation.Services
 {
-	public class BlogRepository : IBlogService
+	public class BlogService : IBlogService
 	{
 		private readonly IGenericRepository<Blog> _blogRepository;
 
-		public BlogRepository(IGenericRepository<Blog> blogRepository) 
+		public BlogService(IGenericRepository<Blog> blogRepository) 
 		{
 			_blogRepository = blogRepository;
 		}
@@ -23,7 +23,9 @@ namespace Infrastructure.Implementation.Services
 			var blogToAdd = new Blog()
 			{
 				Content = blog.Content,
-		
+				CreatedAt = DateTime.Now,
+				PhotoName = blog.PhotoName,
+				PhotoUrl = blog.PhotoUrl,
 				Title = blog.Title,
 			};
 			var isAdded = await _blogRepository.AddAsync(blogToAdd);

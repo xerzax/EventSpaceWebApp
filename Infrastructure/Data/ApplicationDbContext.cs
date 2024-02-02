@@ -1,6 +1,8 @@
 ﻿using Domain;
 using Domain.Entity.Event;
 using Domain.Entity.Post;
+using Domain.Entity.Ticket;
+using Domain.Entity.Todo;
 using EventSpaceApi.Domain.Entity.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +52,10 @@ namespace Infrastructure.Data
 		public DbSet<Photo> Photos { get; set; }
 		public DbSet<Playlist> Playlists { get; set; }
 		public DbSet<Song> Songs { get; set; }
+		public DbSet<Ticket> Tickets { get; set; }
+		public DbSet<TicketInfo> TicketInfos { get; set; }
+		public DbSet<Todo> Todos { get; set; }
+
 		#endregion
 
 		protected override void OnModelCreating(ModelBuilder builder)

@@ -2,9 +2,11 @@
 using Application.Interfaces.Repository;
 using Application.Interfaces.Services;
 using Domain.Entity.Post;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,29 +21,61 @@ namespace Infrastructure.Implementation.Services
 			_photoRepository = photoRepository;
 		}
 
-		public async Task<Photo> AddPhotos(Photo photos)
+		public async Task<Photo> AddPhotosAsync(Photo photos)
 		{
-			
+			var photoToAdd = new Photo
+			{
+				CreatedAt = DateTime.Now,
+				PhotoName = photos.PhotoName,
+				PhotoUrl = photos.PhotoUrl,
+				Title = photos.Title,
+				Tags = photos.Tags,
+			};
+			var addedPhotos = await _photoRepository.AddAsync(photoToAdd);
+			return addedPhotos;
 		}
 
-		public Task DeletePhotosAsync(int id)
+		public async Task DeletePhotosAsync(int id)
 		{
-			throw new NotImplementedException();
+			var toDelete = await _photoRepository.GetByIdAsync(id);
+			await _photoRepository.DeleteAsync(toDelete);
 		}
 
-		public Task<IEnumerable<PhotoDTO>> GetAllPhotosAsync()
+		public async Task<IEnumerable<PhotoDTO>> GetAllPhotosAsync()
 		{
-			throw new NotImplementedException();
+			var allPhotos = await _photoRepository.GetAllAsync();
+			var result = new List<PhotoDTO>();
+			foreach (var photo in allPhotos)
+			{
+				result.Add(new PhotoDTO
+				{
+					Title = photo.Title,
+					Tags = photo.Tags,
+				});
+			}
+			return result.ToList();
 		}
 
-		public Task<PhotoDTO> GetByBlogIdAsync(int id)
+		public async Task<PhotoDTO> GetByPhotoIdAsync(int id)
 		{
-			throw new NotImplementedException();
+			var photoById = await _photoRepository.GetByIdAsync(id);
+			var result = new PhotoDTO()
+			{
+				Title = photoById.Title,
+				Tags = photoById.Tags,
+			};
+			return result;
 		}
 
-		public Task UpdatePhotosAsync(Photo photos)
+		public async Task UpdatePhotosAsync(Photo photos)
 		{
-			throw new NotImplementedException();
+			var photoToUpdate = await _photoRepository.GetByIdAsync(photos.Id);
+			if (photoToUpdate != null)
+			{
+				photoToUpdate.Title = photos.Title;
+				photoToUpdate.Tags = photos.Tags;
+				await _photoRepository.UpdateAsync(photoToUpdate);
+			}
 		}
 	}
 

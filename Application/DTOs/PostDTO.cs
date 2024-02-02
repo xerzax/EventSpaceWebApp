@@ -1,4 +1,4 @@
-﻿using EventSpaceApi.Domain.Entity.Identity;
+﻿using EventSpaceApi.Domain.Entity;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces.Identity;
-using EventSpaceApi.Domain.Entity.Identity;
 using Application.DTOs.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EventSpaceApi.Domain.Entity.Identity;
 
 namespace Identity.Implementation
 {
@@ -37,11 +37,11 @@ namespace Identity.Implementation
 
 				var result = await _userManager.CreateAsync(user, register.Password);
 
-				//if (!result.Succeeded) return new Tuple<string, string>(string.Empty, string.Empty);
+				if (!result.Succeeded) return new Tuple<string, string>(string.Empty, string.Empty);
 
 				// Check if the role exists
 				var roleExists = await _roleManager.RoleExistsAsync(register.Role);
-				if (!roleExists)
+				if (roleExists)
 				{
 					await _userManager.AddToRoleAsync(user, register.Role);
 
