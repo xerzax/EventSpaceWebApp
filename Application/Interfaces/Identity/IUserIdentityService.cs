@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Identity;
+using EventSpaceApi.Domain.Entity.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,18 @@ namespace Application.Interfaces.Identity
 
 		Task<bool> ConfirmEmail(Guid userId, string code);
 
-		Task<string> Login(LoginDto login, string? returnUrl = null);
+
+
+		Task<LoginResponseDTO> Login(LoginDto login, string? returnUrl = null);
 
 		Task LogOut();
 
 		Task<Tuple<string, string>> ForgetPassword(ForgotPasswordDto forgotPassword);
 
 		Task<string> ResetPassword(ResetPasswordDto resetPassword);
+		string GenerateTokenString(User user);
+		UserContext GetLoggedInUser();
+
+
 	}
 }

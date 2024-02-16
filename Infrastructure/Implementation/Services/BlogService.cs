@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Interfaces.Identity;
 using Application.Interfaces.Repository;
 using Application.Interfaces.Services;
 using Domain.Entity.Post;
@@ -13,20 +14,24 @@ namespace Infrastructure.Implementation.Services
 	public class BlogService : IBlogService
 	{
 		private readonly IGenericRepository<Blog> _blogRepository;
+		private readonly IUserIdentityService _userIdentityService;
 
-		public BlogService(IGenericRepository<Blog> blogRepository) 
+
+		public BlogService(IGenericRepository<Blog> blogRepository, IUserIdentityService userIdentityService)
 		{
 			_blogRepository = blogRepository;
+			_userIdentityService = userIdentityService;
 		}
-		public async Task<Blog> AddBlogAsync(Blog blog)
+		public async Task<Blog> AddBlogAsync(BlogDTO blog)
 		{
-			var blogToAdd = new Blog()
+            var user = _userIdentityService.GetLoggedInUser();
+            var blogToAdd = new Blog()
 			{
 				Content = blog.Content,
 				CreatedAt = DateTime.Now,
 				PhotoName = blog.PhotoName,
-				PhotoUrl = blog.PhotoUrl,
 				Title = blog.Title,
+				UserId = user.UserId,
 			};
 			var isAdded = await _blogRepository.AddAsync(blogToAdd);
 			return isAdded;
@@ -41,6 +46,7 @@ namespace Infrastructure.Implementation.Services
 		public async Task<IEnumerable<BlogDTO>> GetAllBlogsAsync()
 		{
 			var allBlogs = await _blogRepository.GetAllAsync();
+			var user = _userIdentityService.GetLoggedInUser();
 			var result = new List<BlogDTO>();
 			foreach(var blog in allBlogs)
 			{

@@ -12,7 +12,7 @@ namespace Application.Interfaces.Services
 	{
 		Task<IEnumerable<BlogDTO>> GetAllBlogsAsync();
 		Task<BlogDTO> GetByIdBlogAsync(int id);
-		Task<Blog> AddBlogAsync(Blog blog);
+		Task<Blog> AddBlogAsync(BlogDTO blog);
 		Task UpdateBlogAsync(Blog blog);
 		Task DeleteBlogAsync(int id);
 	}

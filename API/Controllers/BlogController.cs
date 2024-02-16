@@ -1,10 +1,14 @@
-﻿using Application.Interfaces.Services;
+﻿using Application.DTOs;
+using Application.Interfaces.Services;
 using Domain.Entity.Post;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
+	[Authorize]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class BlogController : ControllerBase
@@ -21,6 +25,7 @@ namespace API.Controllers
 		{
 			try
 			{
+			
 				var blogs = await _blogService.GetAllBlogsAsync();
 				return Ok(blogs);
 			}
@@ -49,10 +54,13 @@ namespace API.Controllers
 		}
 
 		[HttpPost("PostBlogs")]
-		public async Task<ActionResult<Blog>> AddBlogs([FromBody] Blog blog)
+		public async Task<ActionResult<Blog>> AddBlogs([FromBody] BlogDTO blog)
 		{
 			try
 			{
+				//var claimsIdentity = (ClaimsIdentity)User.Identity;
+				//var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+			
 				var addedBlog = await _blogService.AddBlogAsync(blog);
 				return CreatedAtAction(nameof(GetBlogsById), new { id = addedBlog.Id }, addedBlog);
 			}

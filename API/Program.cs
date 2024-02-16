@@ -6,6 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using Identity.Dependency;
 using System.Configuration;
 using Infrastructure.Persistence.Seed;
+using Domain.Constants;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -20,10 +26,52 @@ builder.Services.AddControllers();
 builder.Services.AddIdentityService(configuration);
 
 builder.Services.AddInfrastructureService(configuration);
+builder.Services.Configure<EmailOption>(configuration.GetSection("EmailOption"));
+
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters()
+	{
+		ValidateActor = true,
+		ValidateIssuer = false,
+		ValidateAudience = false,
+		RequireExpirationTime = true,
+		ValidateIssuerSigningKey = true,
+		ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
+		ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value))
+
+	};
+});
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+	options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+	{
+		Description = "Standard Authorization header using the Bearer Scheme (\"bearer {token}\")",
+		In = ParameterLocation.Header,
+		Name = "Authorization",
+		Type = SecuritySchemeType.ApiKey
+	});
+	options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAny",
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 var app = builder.Build();
 
@@ -34,11 +82,22 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
+app.UseRouting();
+
 app.UseAuthentication();;
 app.UseAuthorization();
+app.UseCors("AllowAny");
 
 app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+	endpoints.MapControllerRoute(
+		name: "ConfirmEmail",
+		pattern: "Account/confirm-email/{userId}/{code}", // Define parameters in the pattern
+		defaults: new { controller = "Account", action = "ConfirmEmail" });
+});
 
 using (var scope = app.Services.CreateScope())
 {

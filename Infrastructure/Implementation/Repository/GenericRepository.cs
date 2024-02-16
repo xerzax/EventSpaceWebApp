@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,18 @@ namespace Infrastructure.Implementation.Repository
 		public async Task<T> GetByIdAsync(int id)
 		{
 			return await _dbSet.FindAsync(id);
+		}
+
+		public async Task<T> GetFirstOrDefault(Expression<Func<T, bool>> filter)
+		{
+			try
+			{
+				return await _dbSet.FirstOrDefaultAsync(filter);
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
 		}
 
 		public async Task UpdateAsync(T entity)
