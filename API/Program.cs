@@ -95,7 +95,7 @@ app.UseEndpoints(endpoints =>
 {
 	endpoints.MapControllerRoute(
 		name: "ConfirmEmail",
-		pattern: "Account/confirm-email/{userId}/{code}", // Define parameters in the pattern
+		pattern: "Account/confirm-email/{userId}/{code}", 
 		defaults: new { controller = "Account", action = "ConfirmEmail" });
 });
 

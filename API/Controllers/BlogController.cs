@@ -25,7 +25,6 @@ namespace API.Controllers
 		{
 			try
 			{
-			
 				var blogs = await _blogService.GetAllBlogsAsync();
 				return Ok(blogs);
 			}
