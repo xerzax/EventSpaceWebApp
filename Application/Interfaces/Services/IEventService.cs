@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Event_DTO;
 using Domain.Entity.Event;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,6 @@ namespace Application.Interfaces.Services
 		Task UpdateEvent(int id, int qty);
 		Task UpdateFundAsync(int id, int amount,int qty);
 		Task<IEnumerable<EventDTO>> GetAllEventAsync();
+		Task<EventRequestDTO> CreateEventByAsync(EventRequestDTO evt);
 	}
 }

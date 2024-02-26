@@ -53,13 +53,12 @@ namespace API.Controllers
 		}
 
 		[HttpPost("PostBlogs")]
-		public async Task<ActionResult<Blog>> AddBlogs([FromBody] BlogDTO blog)
+		public async Task<ActionResult<Blog>> AddBlogs([FromForm] BlogDTO blog)
 		{
 			try
 			{
 				//var claimsIdentity = (ClaimsIdentity)User.Identity;
 				//var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-			
 				var addedBlog = await _blogService.AddBlogAsync(blog);
 				return CreatedAtAction(nameof(GetBlogsById), new { id = addedBlog.Id }, addedBlog);
 			}

@@ -1,4 +1,6 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Event_DTO;
+using Application.Interfaces.Identity;
 using Application.Interfaces.Repository;
 using Application.Interfaces.Services;
 using Domain.Entity.Event;
@@ -15,11 +17,13 @@ namespace Infrastructure.Implementation.Services
 	public class EventService : IEventService
 	{
 		private readonly IGenericRepository<Event> _eventRepository;
+        private readonly IUserIdentityService _userIdentityService;
 
-		public EventService(IGenericRepository<Event> eventRepository)
+        public EventService(IGenericRepository<Event> eventRepository, IUserIdentityService userIdentityService)
 		{
 			_eventRepository = eventRepository;
-		}
+            _userIdentityService = userIdentityService;
+        }
 
 		public async Task<IEnumerable<EventDTO>> GetAllEventAsync()
 		{
@@ -91,5 +95,30 @@ namespace Infrastructure.Implementation.Services
 				AvailableSeats = evt.AvailableSeats
 			};
 		}
-	}
+
+        public async Task<EventRequestDTO> CreateEventByAsync(EventRequestDTO evt)
+        {
+			var user = _userIdentityService.GetLoggedInUser();
+			var newEvent = new Event()
+			{
+				Name = evt.Name,
+				Venue = evt.Venue,
+				Artist = evt.Artist,
+				Date = evt.Date,
+				StartingPrice = evt.StartingPrice,
+				TotalSeats = evt.TotalSeats,
+				UserId = user.UserId,
+			};
+			var addedEvent = await _eventRepository.AddAsync(newEvent);
+			return new EventRequestDTO
+			{
+				Name = evt.Name,
+				Venue = evt.Venue,
+				Artist = evt.Artist,
+				Date = evt.Date,
+				StartingPrice = evt.StartingPrice,
+				TotalSeats = evt.TotalSeats,
+			};
+        }
+    }
 }

@@ -1,5 +1,7 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Event_DTO;
 using Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +18,7 @@ namespace API.Controllers
 			_eventService = eventService;
 		}
 
-		[HttpGet]
+		[HttpGet("GetAllEvents")]
 		public async Task<ActionResult<IEnumerable<EventDTO>>> GetAllEvents()
 		{
 			return Ok(await _eventService.GetAllEventAsync());
@@ -45,6 +47,14 @@ namespace API.Controllers
 		{
 			await _eventService.UpdateFundAsync(id, amount, qty);
 			return NoContent();
+		}
+
+		[Authorize(Roles = "Organizer")]
+		[HttpPost("CreateEvent")]
+		public async Task<IActionResult> CreateEvent(EventRequestDTO evt)
+		{
+			var createdEvent = await _eventService.CreateEventByAsync(evt);
+			return Ok(createdEvent);
 		}
 	}
 }

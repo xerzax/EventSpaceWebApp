@@ -99,22 +99,6 @@ namespace Identity.Implementation
             }
         }
 
-        //public async Task<User> FindUserByEmail(string email)
-        //{
-        //	try
-        //	{
-        //		var user = await _genericRepo.GetFirstOrDefault(x => x.Email == email);
-        //		return user;
-        //	}
-        //	catch (Exception e)
-        //	{
-
-        //		throw e;
-
-        //	}
-        //}
-
-
 
         public async Task<LoginResponseDTO> Login(LoginDto login, string? returnUrl = null)
         {
@@ -223,6 +207,13 @@ namespace Identity.Implementation
                 Audience = _config["Jwt:Audience"],
                 Issuer = _config["Jwt:Issuer"]
             };
+
+            // Add roles to the token
+            var userRoles = _userManager.GetRolesAsync(user).Result;
+            foreach (var role in userRoles)
+            {
+                tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, role));
+            }
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
