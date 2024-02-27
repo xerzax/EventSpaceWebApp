@@ -9,7 +9,10 @@ namespace Application.Interfaces.Services
 {
 	public interface IFileService
 	{
-		Tuple<int, string> SaveImage(IFormFile imageFile);
-		public bool DeleteImage(string imageFileName);
+		/*Tuple<int, string> SaveImage(IFormFile imageFile);
+		public bool DeleteImage(string imageFileName);*/
+
+		Task<string> UploadUserFile(IFormFile file, string uploadImageFolderPath);
+		Task DeleteUserUpload(int id);
 	}
 }

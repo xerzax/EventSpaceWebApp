@@ -30,6 +30,8 @@ namespace Infrastructure.Dependency
 			services.AddScoped<IEventService, EventService>();
 			services.AddScoped<IBlogService, BlogService>();
 			services.AddScoped<IPhotoService, PhotoService>();
+			services.AddScoped<IFileService, FileService>();
+			services.AddScoped<FileSettingConfig>();
 			services.AddScoped<IPlaylistService, PlaylistService>();
 			services.AddScoped<IEmailService, EmailService>();
 			services.AddScoped<ITodoService, TodoService>();

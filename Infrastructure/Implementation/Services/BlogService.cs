@@ -3,8 +3,10 @@ using Application.Interfaces.Identity;
 using Application.Interfaces.Repository;
 using Application.Interfaces.Services;
 using Domain.Entity.Post;
+using Identity.Dependency;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,17 +17,18 @@ namespace Infrastructure.Implementation.Services
 	{
 		private readonly IGenericRepository<Blog> _blogRepository;
 		private readonly IUserIdentityService _userIdentityService;
+		private readonly IGetUserByID _getUserByID;
 
-
-		public BlogService(IGenericRepository<Blog> blogRepository, IUserIdentityService userIdentityService)
+		public BlogService(IGenericRepository<Blog> blogRepository, IUserIdentityService userIdentityService, IGetUserByID getUserByID)
 		{
 			_blogRepository = blogRepository;
 			_userIdentityService = userIdentityService;
+			_getUserByID = getUserByID;
 		}
 		public async Task<Blog> AddBlogAsync(BlogDTO blog)
 		{
-            var user = _userIdentityService.GetLoggedInUser();
-            var blogToAdd = new Blog()
+			var user = _userIdentityService.GetLoggedInUser();
+			var blogToAdd = new Blog()
 			{
 				Content = blog.Content,
 				CreatedAt = DateTime.Now,

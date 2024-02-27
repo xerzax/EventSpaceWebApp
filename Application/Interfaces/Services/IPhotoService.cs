@@ -12,8 +12,11 @@ namespace Application.Interfaces.Services
 	{
 		Task<IEnumerable<PhotoDTO>> GetAllPhotosAsync();
 		Task<PhotoDTO> GetByPhotoIdAsync(int id);
-		Task<Photo> AddPhotosAsync(Photo photos);
+	/*	Task<Photo> AddPhotosAsync(Photo photos);*/
 		Task DeletePhotosAsync(int id);
 		Task UpdatePhotosAsync(Photo photos);
+
+/*------------------------------------------------*/
+		Task InsertPhoto(PhotoDTO photo);
 	}
 }

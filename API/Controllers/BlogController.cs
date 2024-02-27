@@ -57,8 +57,6 @@ namespace API.Controllers
 		{
 			try
 			{
-				//var claimsIdentity = (ClaimsIdentity)User.Identity;
-				//var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 				var addedBlog = await _blogService.AddBlogAsync(blog);
 				return CreatedAtAction(nameof(GetBlogsById), new { id = addedBlog.Id }, addedBlog);
 			}

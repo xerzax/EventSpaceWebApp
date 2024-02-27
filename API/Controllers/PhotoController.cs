@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Services;
+﻿using Application.DTOs;
+using Application.Interfaces.Services;
 using Domain.Entity.Post;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,12 @@ namespace API.Controllers
 	public class PhotoController : ControllerBase
 	{
 		private readonly IPhotoService _photoService;
+		private readonly IFileService _fileService;
 
-		public PhotoController(IPhotoService photoService)
+		public PhotoController(IPhotoService photoService, IFileService fileService)
 		{
 			_photoService = photoService;
+			_fileService = fileService;
 		}
 
 		[HttpGet("GetAllPhotos")]
@@ -49,7 +52,7 @@ namespace API.Controllers
 			}
 		}
 
-		[HttpPost("PostPhotos")]
+		/*[HttpPost("PostPhotos")]
 		public async Task<ActionResult<Photo>> AddPhotos([FromBody] Photo photos)
 		{
 			try
@@ -62,7 +65,7 @@ namespace API.Controllers
 				return StatusCode(500, ex.Message);
 			}
 		}
-
+*/
 		[HttpPut("{id}")]
 		public async Task<IActionResult> UpdatePhoto(int id, [FromBody] Photo photo)
 		{
@@ -86,14 +89,30 @@ namespace API.Controllers
 		{
 			try
 			{
-				await _photoService.DeletePhotosAsync(id);
-				return NoContent();
+				await _fileService.DeleteUserUpload(id);
+				return Ok("Photo Deleted!");
 			}
 			catch (Exception ex)
 			{
 				return StatusCode(500, ex.Message);
 			}
 		}
+
+		[HttpPost("insertPic")]
+		public async Task<IActionResult> InsertPhoto([FromForm] PhotoDTO photo)
+		{
+			await _photoService.InsertPhoto(photo);
+			var result = "Photo added!";
+			return Ok(result);
+		}
+
+		/*[HttpPost("addPhoto")]
+		public async Task<IActionResult> PostPhoto(Photo photo)
+		{ 
+			var addPhoto = await _photoService.AddPhotosAsync(photo);
+			return Ok(addPhoto);
+		}*/
+		
 	}
 }
 

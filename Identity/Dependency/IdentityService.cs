@@ -28,6 +28,7 @@ namespace Identity.Dependency
 				options.Password.RequireLowercase = true;
 			}).AddEntityFrameworkStores<ApplicationDbContext>()
 			  .AddDefaultTokenProviders();
+			services.AddScoped<IGetUserByID, GetUserByIDService>();
 
 			services.Configure<IdentityOptions>(options =>
 				options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
