@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Implementation.Services
 {
-	public class TierService : ITierService
+    public class TierService : ITierService
 	{
 		private readonly IGenericRepository<Tier> _tierRepository;
 
@@ -24,7 +24,7 @@ namespace Infrastructure.Implementation.Services
 			var tier = await _tierRepository.GetByIdAsync(id);
 			if (tier == null) return null;
 			return new TierDTO
-			{
+            {
 				Id = tier.Id,
 				Name = tier.Name,
 				TotalSeats = tier.TotalSeats,

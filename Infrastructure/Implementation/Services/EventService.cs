@@ -16,14 +16,17 @@ namespace Infrastructure.Implementation.Services
 {
 	public class EventService : IEventService
 	{
+		private readonly IGenericRepository<Tier> _tierRepository;
+
 		private readonly IGenericRepository<Event> _eventRepository;
         private readonly IUserIdentityService _userIdentityService;
 
-        public EventService(IGenericRepository<Event> eventRepository, IUserIdentityService userIdentityService)
+		public EventService(IGenericRepository<Event> eventRepository, IUserIdentityService userIdentityService, IGenericRepository<Tier> tierRepository)
 		{
 			_eventRepository = eventRepository;
-            _userIdentityService = userIdentityService;
-        }
+			_userIdentityService = userIdentityService;
+			_tierRepository = tierRepository;
+		}
 
 		public async Task<IEnumerable<EventDTO>> GetAllEventAsync()
 		{
@@ -110,6 +113,19 @@ namespace Infrastructure.Implementation.Services
 				UserId = user.UserId,
 			};
 			var addedEvent = await _eventRepository.AddAsync(newEvent);
+
+			foreach(var tier in evt.TierList)
+			{
+				Tier tierObj	= new Tier() { Name = tier.Name,
+					Price = tier.Price,
+					TotalSeats = tier.TotalSeats,
+					EventId = addedEvent.Id
+				};
+
+				var addedTier = await _tierRepository.AddAsync(tierObj);
+
+			}
+
 			return new EventRequestDTO
 			{
 				Name = evt.Name,

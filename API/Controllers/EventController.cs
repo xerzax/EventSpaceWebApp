@@ -51,7 +51,7 @@ namespace API.Controllers
 
 		[Authorize(Roles = "Organizer")]
 		[HttpPost("CreateEvent")]
-		public async Task<IActionResult> CreateEvent(EventRequestDTO evt)
+		public async Task<IActionResult> CreateEvent([FromBody]EventRequestDTO evt)
 		{
 			var createdEvent = await _eventService.CreateEventByAsync(evt);
 			return Ok(createdEvent);

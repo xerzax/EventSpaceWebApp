@@ -80,15 +80,15 @@ namespace Infrastructure.Implementation.Services
 		public async Task InsertPhoto(PhotoDTO photo)
 		{
 
-			/*var userString = await _getUserByID.UserId;*/
+			var user = _userIdentityService.GetLoggedInUser();
 			string imageUploads = "Image";
 
 			var imageUpload = await _fileService.UploadUserFile(photo.Photo, imageUploads);
-			/*if (userString == null)
+			if (user == null)
 			{
 				throw new Exception("User is not logged in.");
 			}
-*/
+
 			// Explicitly convert the userString to a Guid
 			/*Guid userGuid = new Guid(userString);*/
 
@@ -98,14 +98,12 @@ namespace Infrastructure.Implementation.Services
 				DeletedAt = DateTime.UtcNow.AddDays(7),
 				PhotoName = photo.PhotoName,
 				Title = photo.Title,
-				UserId = new Guid("465E588F-1089-4FBC-6743-08DC36B817BD"),
+				UserId = user.UserId,
 				IsDeleted = false,
 				Tags = photo.Tags,
 				LastUpdatedAt = DateTime.Now,
 			};
 			await _photoRepository.AddAsync(photoModel);
-
-
 		}
 
 		public async Task UpdatePhotosAsync(Photo photos)
