@@ -17,13 +17,11 @@ namespace Infrastructure.Implementation.Services
 	{
 		private readonly IGenericRepository<Blog> _blogRepository;
 		private readonly IUserIdentityService _userIdentityService;
-		private readonly IGetUserByID _getUserByID;
 
-		public BlogService(IGenericRepository<Blog> blogRepository, IUserIdentityService userIdentityService, IGetUserByID getUserByID)
+		public BlogService(IGenericRepository<Blog> blogRepository, IUserIdentityService userIdentityService)
 		{
 			_blogRepository = blogRepository;
 			_userIdentityService = userIdentityService;
-			_getUserByID = getUserByID;
 		}
 		public async Task<Blog> AddBlogAsync(BlogDTO blog)
 		{

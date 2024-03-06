@@ -19,7 +19,7 @@ namespace Domain.Entity.Event
 		/*[Required(ErrorMessage = "Event name is required")]
 		[RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$")]*/
 		public string? Name { get; set; }
-		/*[Required(ErrorMessage = "Event venue is required")]*/
+	/*	[Required(ErrorMessage = "Event venue is required")]*/
 		public string? Venue {  get; set; }
 		/*[Required(ErrorMessage = "Event date is required")]*/
 		public DateTime Date {  get; set; }

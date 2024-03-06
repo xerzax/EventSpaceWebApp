@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Todo;
 using Domain.Entity.Todo;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,8 @@ namespace Application.Interfaces.Services
 	{
 		Task<IEnumerable<TodoDTO>> GetAllTodosAsync();
 		Task<TodoDTO> GetTodoById(int id);
-		Task<Todo> AddTodoAsync(Todo todos);
+		Task<Todo> AddTodoAsync(TodoDTO todos);
 		Task DeleteTodoAsync(int id);
-		Task UpdateTodoAsync(int id,TodoDTO todos);
+		Task UpdateTodoAsync(Todo todos);
 	}
 }

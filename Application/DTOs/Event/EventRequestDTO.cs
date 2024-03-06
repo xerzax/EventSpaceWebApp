@@ -15,7 +15,6 @@ namespace Application.DTOs.Event_DTO
         public decimal StartingPrice { get; set; }
         public int TotalSeats { get; set; }
 
-
 		public List<TierRequestDTO> TierList { get; set; } = new List<TierRequestDTO>();
 
 
