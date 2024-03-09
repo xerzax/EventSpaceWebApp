@@ -12,14 +12,11 @@ namespace Application.DTOs.Ticket
 	public class TicketRequestDTO
 	{
 
-		public int Id { get; set; }
+		
 		public int Qty { get; set; }
-		public int TotalPrice { get; set; }
-		public Boolean isConfirmed { get; set; } = false;
-		public string? TierName { get; set; } = "general";
-		public EventType TicketType { get; set; }
-		public string? Venue { get; set; }
-		public string? Eventdate { get; set; }
+		
+		public string? TierName { get; set; }
+		public int EventId { get; set; }
 
 	}
 }

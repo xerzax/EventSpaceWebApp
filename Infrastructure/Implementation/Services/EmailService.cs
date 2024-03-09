@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Email;
+using Application.DTOs.Ticket;
 using Application.Interfaces.Services;
 using Domain.Constants;
 using Mailjet.Client;
@@ -17,12 +18,12 @@ namespace Infrastructure.Implementation.Services
 
 	{
 
-		private  EmailOption _emailOption { get; }
-        public EmailService(IOptions<EmailOption> emailSettings)
-        {
-				_emailOption = emailSettings.Value;
-        }
-        public async Task SendEmail(EmailActionDto emailAction)
+		private EmailOption _emailOption { get; }
+		public EmailService(IOptions<EmailOption> emailSettings)
+		{
+			_emailOption = emailSettings.Value;
+		}
+		public async Task SendEmail(EmailActionDto emailAction)
 		{
 			try
 			{
@@ -51,7 +52,48 @@ namespace Infrastructure.Implementation.Services
 
 				MailjetResponse response = await client.PostAsync(request);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+		}
+
+		public async Task SendTicketPurchaseConfirmationEmail(TicketResponseDTO ticketResponseDTO, string userEmail)
+		{
+			try
+			{
+				var client = new MailjetClient(_emailOption.ApiKey, _emailOption.SecretKey);
+				string emailBody = $"Thank you for purchasing the tickets! Here are the details:<br/><br/>" +
+								   $"Quantity: {ticketResponseDTO.Qty}<br/>" +
+								   $"Total Price: {ticketResponseDTO.TotalPrice}<br/>" +
+								   $"Tier: {ticketResponseDTO.TierName}<br/>" +
+								   $"Event Type: {ticketResponseDTO.TicketType}<br/>" +
+								   $"Venue: {ticketResponseDTO.Venue}<br/>" +
+								   $"Event Date: {ticketResponseDTO.Eventdate}<br/><br/>" +
+								   "We appreciate your support!";
+
+				var request = new MailjetRequest
+				{
+					Resource = Send.Resource,
+				}.Property(Send.Messages, new JArray {
+			new JObject {
+				{ "FromEmail", "ritika.shrestha707@gmail.com" },
+				{ "FromName", "EventSpace" },
+				{ "Recipients", new JArray {
+					new JObject {
+						{ "Email", userEmail },
+						{ "Name", userEmail }
+					}
+				}},
+				{ "Subject", "Ticket Purchase Confirmation" },
+				{ "Text-part", "Thank you for purchasing the tickets! We appreciate your support." },
+				{ "Html-part", emailBody }
+			}
+		});
+
+				MailjetResponse response = await client.PostAsync(request);
+			}
+			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
 			}

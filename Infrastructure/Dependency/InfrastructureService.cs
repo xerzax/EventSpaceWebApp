@@ -35,6 +35,7 @@ namespace Infrastructure.Dependency
 			services.AddScoped<IPlaylistService, PlaylistService>();
 			services.AddScoped<IEmailService, EmailService>();
 			services.AddScoped<ITodoService, TodoService>();
+			services.AddScoped<ITicketService, TicketService>();
 
 
 			return services;

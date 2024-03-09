@@ -10,9 +10,11 @@ namespace Application.Interfaces.Services
 {
 	public interface ITicketService
 	{
-		Task<IEnumerable<TicketResponseDTO>> GetAllTickets();
+		/*Task<IEnumerable<TicketResponseDTO>> GetAllTickets();
 		Task<TicketResponseDTO> GetTicketByIdAsync(int id);
-		Task<TicketRequestDTO> CreateTicketByAsync(TicketRequestDTO ticket);
+		Task<TicketRequestDTO> CreateTicketByAsync(TicketRequestDTO ticket);*/
+
+		Task<TicketResponseDTO> BuyTicketsAsync(TicketRequestDTO ticketRequestDTO);
 
 	}
 }

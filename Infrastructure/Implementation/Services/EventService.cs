@@ -110,16 +110,20 @@ namespace Infrastructure.Implementation.Services
 				Date = evt.Date,
 				StartingPrice = evt.StartingPrice,
 				TotalSeats = evt.TotalSeats,
+				AvailableSeats = evt.TotalSeats,
 				UserId = user.UserId,
 			};
 			var addedEvent = await _eventRepository.AddAsync(newEvent);
 
 			foreach(var tier in evt.TierList)
 			{
-				Tier tierObj	= new Tier() { Name = tier.Name,
+				Tier tierObj	= new Tier() { 
+					Name = tier.Name,
 					Price = tier.Price,
 					TotalSeats = tier.TotalSeats,
-					EventId = addedEvent.Id
+					EventId = addedEvent.Id,
+					AvailableSeats = tier.TotalSeats,
+
 				};
 
 				var addedTier = await _tierRepository.AddAsync(tierObj);
