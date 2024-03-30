@@ -19,7 +19,8 @@ namespace Infrastructure.Implementation.Services
 		private readonly IGenericRepository<Tier> _tierRepository;
 
 		private readonly IGenericRepository<Event> _eventRepository;
-        private readonly IUserIdentityService _userIdentityService;
+
+		private readonly IUserIdentityService _userIdentityService;
 
 		public EventService(IGenericRepository<Event> eventRepository, IUserIdentityService userIdentityService, IGenericRepository<Tier> tierRepository)
 		{
@@ -82,6 +83,20 @@ namespace Infrastructure.Implementation.Services
 		public async Task<EventDTO> GetEventByIdAsync(int id)
 		{
 			var evt = await _eventRepository.GetByIdAsync(id);
+
+			var tiers = await _tierRepository.Where(x => x.EventId == id);
+
+			List<TierDTO> tierDTOs = new List<TierDTO>();
+
+			if (tiers.Count > 0)
+			{
+
+				tierDTOs = MapToDTO(tiers);
+			}
+
+
+
+
 			if (evt == null) return null;
 
 			return new EventDTO
@@ -95,12 +110,30 @@ namespace Infrastructure.Implementation.Services
 				TotalSeats = evt.TotalSeats,
 				SoldSeats = evt.SoldSeats,
 				AmountRaised = evt.AmountRaised,
-				AvailableSeats = evt.AvailableSeats
+				AvailableSeats = evt.AvailableSeats,
+				TierList = tierDTOs
 			};
 		}
 
-        public async Task<EventRequestDTO> CreateEventByAsync(EventRequestDTO evt)
-        {
+		private List<TierDTO> MapToDTO(List<Tier> entities)
+		{
+			return entities.Select(entity => MapToDTO(entity)).ToList();
+		}
+
+		private TierDTO MapToDTO(Tier entity)
+		{
+			return new TierDTO
+			{
+				Id = entity.Id,
+				Name = entity.Name,
+				TotalSeats = entity.TotalSeats,
+				AvailableSeats = entity.AvailableSeats,
+				Price = entity.Price,
+			};
+		}
+
+		public async Task<EventRequestDTO> CreateEventByAsync(EventRequestDTO evt)
+		{
 			var user = _userIdentityService.GetLoggedInUser();
 			var newEvent = new Event()
 			{
@@ -115,9 +148,10 @@ namespace Infrastructure.Implementation.Services
 			};
 			var addedEvent = await _eventRepository.AddAsync(newEvent);
 
-			foreach(var tier in evt.TierList)
+			foreach (var tier in evt.TierList)
 			{
-				Tier tierObj	= new Tier() { 
+				Tier tierObj = new Tier()
+				{
 					Name = tier.Name,
 					Price = tier.Price,
 					TotalSeats = tier.TotalSeats,
@@ -139,6 +173,6 @@ namespace Infrastructure.Implementation.Services
 				StartingPrice = evt.StartingPrice,
 				TotalSeats = evt.TotalSeats,
 			};
-        }
-    }
+		}
+	}
 }

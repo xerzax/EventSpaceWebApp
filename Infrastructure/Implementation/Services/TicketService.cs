@@ -78,7 +78,7 @@ namespace Infrastructure.Implementation.Services
 			}
 			else
 			{
-				throw new Exception("Sakkyo ticket khaiss");
+				throw new Exception("Tickets are no longer available!");
 			}
 
 

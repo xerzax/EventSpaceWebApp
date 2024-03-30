@@ -11,11 +11,14 @@ namespace API.Controllers
 	[ApiController]
 	public class EventController : ControllerBase
 	{
+		private readonly ITierService _tierService;
+
 		private readonly IEventService _eventService;
 
-		public EventController(IEventService eventService)
+		public EventController(IEventService eventService, ITierService tierService)
 		{
 			_eventService = eventService;
+			_tierService = tierService;
 		}
 
 		[HttpGet("GetAllEvents")]
@@ -47,6 +50,13 @@ namespace API.Controllers
 		{
 			await _eventService.UpdateFundAsync(id, amount, qty);
 			return NoContent();
+		}
+
+		[HttpGet("GetTierById/{id}")]
+		public async Task<IActionResult> GetTierById(int id)
+		{
+			var tier = await _tierService.GetTierByIdAsync(id);
+			return Ok(tier);
 		}
 
 		[Authorize(Roles = "Organizer")]

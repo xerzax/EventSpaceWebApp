@@ -16,6 +16,7 @@ namespace Application.Interfaces.Repository
 		Task DeleteAsync(T entity);
 
 		Task<T> GetFirstOrDefault(Expression<Func<T, bool>> filter);
+        Task<List<T>> Where(Expression<Func<T, bool>> filter);
 
-	}
+    }
 }

@@ -14,7 +14,6 @@ namespace Infrastructure.Data
 	{
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
 		{
-			Database.EnsureCreated();
 		}
 
 		#region Identity Tables
@@ -48,6 +47,7 @@ namespace Infrastructure.Data
 		public DbSet<Ticket> Tickets { get; set; }
 		public DbSet<TicketInfo> TicketInfos { get; set; }
 		public DbSet<Todo> Todos { get; set; }
+		public DbSet<Like> Likes {  get; set; }
 
 		#endregion
 

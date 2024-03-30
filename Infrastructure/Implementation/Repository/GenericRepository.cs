@@ -62,5 +62,16 @@ namespace Infrastructure.Implementation.Repository
 			_dbContext.Entry(entity).State = EntityState.Modified;
 			await _dbContext.SaveChangesAsync();	
 		}
-	}
+        public async Task<List<T>> Where(Expression<Func<T, bool>> filter)
+        {
+            try
+            {
+                return await _dbSet.Where(filter).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
 }
