@@ -177,11 +177,14 @@ namespace Identity.Implementation
             {
                 var user = await _userManager.FindByEmailAsync(resetPassword.Email);
 
-                if (user == null) return string.Empty;
+                if (user == null)
+                {
+                    return string.Empty; // User not found
+                }
 
                 var result = await _userManager.ResetPasswordAsync(user, resetPassword.Code, resetPassword.Password);
 
-                return result.Succeeded ? "Success" : string.Empty;
+                return result.Succeeded ? "Success" : string.Empty; // Password reset success or failure
             }
             catch (Exception e)
             {
@@ -189,6 +192,7 @@ namespace Identity.Implementation
                 throw;
             }
         }
+
 
         public string GenerateTokenString(User user)
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,8 @@ namespace Application.DTOs.Event_DTO
         public string Artist { get; set; }
         public decimal StartingPrice { get; set; }
         public int TotalSeats { get; set; }
-
+/*
+        public IFormFile EventPhoto { get; set; }*/
 		public List<TierRequestDTO> TierList { get; set; } = new List<TierRequestDTO>();
 
 

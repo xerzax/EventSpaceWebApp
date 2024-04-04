@@ -53,7 +53,7 @@ namespace API.Controllers
 		}
 
 		[HttpPost("PostBlogs")]
-		public async Task<ActionResult<Blog>> AddBlogs([FromForm] BlogDTO blog)
+		public async Task<ActionResult<Blog>> AddBlogs(BlogDTO blog)
 		{
 			try
 			{

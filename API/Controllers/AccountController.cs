@@ -104,16 +104,22 @@ public class AccountController : ControllerBase
 		return Ok(new { UserId = result.Item1, Code = result.Item2 });
 	}
 
-	[HttpPost("reset-password")]
-	public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPassword)
-	{
-		var result = await _userIdentityService.ResetPassword(resetPassword);
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPassword)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
-		if (string.IsNullOrEmpty(result))
-		{
-			return BadRequest("Password reset failed.");
-		}
+        var result = await _userIdentityService.ResetPassword(resetPassword);
 
-		return Ok("Password has been reset successfully.");
-	}
+        if (string.IsNullOrEmpty(result))
+        {
+            return BadRequest("Password reset failed.");
+        }
+
+        return Ok("Password has been reset successfully.");
+    }
+
 }

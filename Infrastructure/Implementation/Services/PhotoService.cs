@@ -81,9 +81,7 @@ namespace Infrastructure.Implementation.Services
 		{
 
 			var user = _userIdentityService.GetLoggedInUser();
-			string imageUploads = "Image";
 
-			var imageUpload = await _fileService.UploadUserFile(photo.Photo, imageUploads);
 			if (user == null)
 			{
 				throw new Exception("User is not logged in.");

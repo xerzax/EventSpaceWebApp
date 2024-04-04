@@ -38,8 +38,8 @@ namespace Domain.Entity.Event
         public User User { get; set; }
 
 		public virtual ICollection<Tier> Tiers { get; set; }
-
-		public virtual ICollection<EventWishlist> EventWishlists { get; set; }
+/*
+		public virtual ICollection<EventWishlist> EventWishlists { get; set; }*/
 
 		public string? EventPhoto { get; set; }
 

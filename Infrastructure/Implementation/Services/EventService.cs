@@ -4,7 +4,9 @@ using Application.Interfaces.Identity;
 using Application.Interfaces.Repository;
 using Application.Interfaces.Services;
 using Domain.Entity.Event;
+using Domain.Entity.Post;
 using EventVerse.Core.Enums;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,16 +19,17 @@ namespace Infrastructure.Implementation.Services
 	public class EventService : IEventService
 	{
 		private readonly IGenericRepository<Tier> _tierRepository;
-
+		private readonly IFileService _fileService;
 		private readonly IGenericRepository<Event> _eventRepository;
 
 		private readonly IUserIdentityService _userIdentityService;
 
-		public EventService(IGenericRepository<Event> eventRepository, IUserIdentityService userIdentityService, IGenericRepository<Tier> tierRepository)
+		public EventService(IGenericRepository<Event> eventRepository, IUserIdentityService userIdentityService, IGenericRepository<Tier> tierRepository, IFileService fileService)
 		{
 			_eventRepository = eventRepository;
 			_userIdentityService = userIdentityService;
 			_tierRepository = tierRepository;
+			_fileService = fileService;
 		}
 
 		public async Task<IEnumerable<EventDTO>> GetAllEventAsync()
@@ -135,6 +138,11 @@ namespace Infrastructure.Implementation.Services
 		public async Task<EventRequestDTO> CreateEventByAsync(EventRequestDTO evt)
 		{
 			var user = _userIdentityService.GetLoggedInUser();
+			
+			if (user == null)
+			{
+				throw new Exception("User is not logged in.");
+			}
 			var newEvent = new Event()
 			{
 				Name = evt.Name,

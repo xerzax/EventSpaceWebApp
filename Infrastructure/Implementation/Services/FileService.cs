@@ -106,7 +106,7 @@ public class FileService : IFileService
 	}
 
 
-	public async Task<string> UploadUserFile(IFormFile file, string uploadImageFolderPath)
+    /*public async Task<string> UploadUserFile(IFormFile file, string uploadImageFolderPath)
 	{
 		var result = "";
 
@@ -132,9 +132,37 @@ public class FileService : IFileService
 		result = Path.Combine(uploadImageFolderPath, fileName);
 
 		return result;
-	}
+	}*/
+    public async Task<string> UploadUserFile(IFormFile file, string uploadImageFolderPath)
+    {
+        var result = "";
 
-	private static string GenerateRandomWord(int length)
+        var wwwRootPath = _webHostEnvironment.WebRootPath;
+
+		var uploadsPath = Path.Combine(wwwRootPath, "uploads");
+
+        var imagePath = Path.Combine(uploadsPath, uploadImageFolderPath);
+
+        if (!Directory.Exists(imagePath))
+        {
+            Directory.CreateDirectory(imagePath);
+        }
+
+        var identifier = GenerateRandomWord(4);
+
+        var renamedFileName = $"[{identifier}]{DateTime.Now:yyyyMMddHHmmssfff}";
+
+        var fileName = $"{renamedFileName}{Path.GetExtension(file.FileName)}";
+
+        await using var stream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create);
+
+        await file.CopyToAsync(stream);
+
+        return fileName;
+    }
+
+
+    private static string GenerateRandomWord(int length)
 	{
 		const string chars = "abcdefghijklmnopqrstuvwxyz";
 		Random random = new Random();

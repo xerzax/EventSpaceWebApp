@@ -17,15 +17,26 @@ namespace Infrastructure.Implementation.Services
 	{
 		private readonly IGenericRepository<Blog> _blogRepository;
 		private readonly IUserIdentityService _userIdentityService;
+		private readonly IFileService _fileService;
 
-		public BlogService(IGenericRepository<Blog> blogRepository, IUserIdentityService userIdentityService)
+		public BlogService(IGenericRepository<Blog> blogRepository, IUserIdentityService userIdentityService, IFileService fileService)
 		{
 			_blogRepository = blogRepository;
 			_userIdentityService = userIdentityService;
+			_fileService = fileService;
 		}
-		public async Task<Blog> AddBlogAsync(BlogDTO blog)
+        /*public async Task<Blog> AddBlogAsync(BlogDTO blog)
 		{
 			var user = _userIdentityService.GetLoggedInUser();
+
+			*//*string imageUploads = "Image";
+
+			var imageUpload = await _fileService.UploadUserFile(blog.File, imageUploads);*//*
+			if (user == null)
+			{
+				throw new Exception("User is not logged in.");
+			}
+
 			var blogToAdd = new Blog()
 			{
 				Content = blog.Content,
@@ -36,9 +47,32 @@ namespace Infrastructure.Implementation.Services
 			};
 			var isAdded = await _blogRepository.AddAsync(blogToAdd);
 			return isAdded;
-		}
+		}*/
 
-		public async Task DeleteBlogAsync(int id)
+        public async Task<Blog> AddBlogAsync(BlogDTO blog)
+        {
+            var user = _userIdentityService.GetLoggedInUser();
+
+            if (user == null)
+            {
+                throw new Exception("User is not logged in.");
+            }
+
+			var blogToAdd = new Blog()
+			{
+				Content = blog.Content,
+				CreatedAt = DateTime.Now,
+				PhotoName = blog.PhotoName,
+				Title = blog.Title,
+				UserId = user.UserId,
+            };
+
+            var isAdded = await _blogRepository.AddAsync(blogToAdd);
+            
+			return isAdded;
+        }
+
+        public async Task DeleteBlogAsync(int id)
 		{
 			var toDelete = await _blogRepository.GetByIdAsync(id);
 			await _blogRepository.DeleteAsync(toDelete);
