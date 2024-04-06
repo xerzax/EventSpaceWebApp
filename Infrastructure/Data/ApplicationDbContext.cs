@@ -137,7 +137,8 @@ namespace Infrastructure.Data
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketInfo> TicketInfos { get; set; }
         public DbSet<Todo> Todos { get; set; }
-        public DbSet<Like> Likes { get; set; }
+      /*  public DbSet<Follow> Follows { get; set; }
+        public DbSet<Comment> Comments { get; set; }*/
 
     /*    public DbSet<Comment> Comment { get; set; }
 
