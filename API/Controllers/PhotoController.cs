@@ -1,10 +1,12 @@
 ﻿using Application.DTOs;
 using Application.Interfaces.Services;
 using Domain.Entity.Post;
+using Infrastructure.Implementation.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow.ValueContentAnalysis;
+using System.Reflection.Metadata;
 
 namespace API.Controllers
 {
@@ -102,11 +104,18 @@ namespace API.Controllers
 		}
 
 		[HttpPost("insertPic")]
-		public async Task<IActionResult> InsertPhoto([FromForm] PhotoDTO photo)
+		public async Task<IActionResult> InsertPhoto(PhotoDTO photo)
 		{
-			await _photoService.InsertPhoto(photo);
-			var result = "Photo added!";
-			return Ok(result);
+			try
+			{
+				await _photoService.InsertPhoto(photo);
+				var result = "Photo added!";
+				return Ok(result);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, ex.Message);
+			}
 		}
 
 		/*[HttpPost("addPhoto")]
@@ -115,7 +124,7 @@ namespace API.Controllers
 			var addPhoto = await _photoService.AddPhotosAsync(photo);
 			return Ok(addPhoto);
 		}*/
-		
+
 	}
 }
 

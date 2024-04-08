@@ -10,10 +10,10 @@ namespace Application.Interfaces.Services
 {
 	public interface ISongService
 	{
-		Task<IEnumerable<SongDTO>> GetAllSongsAsync();
-		Task<SongDTO> GetSongByIdAsync(int id);
-		Task<Song> AddSongAsync(Song song);
-		Task DeleteSongAsync(int id);
-		Task UpdateSongAsync(Song song);
-	}
+        Task<IEnumerable<SongDTO>> GetAllSongsAsync();
+        Task<SongDTO> GetSongByIdAsync(int id);
+        Task<Song> AddSongAsync(Song song);
+        Task DeleteSongAsync(int id);
+        Task UpdateSongAsync(Song song);
+    }
 }

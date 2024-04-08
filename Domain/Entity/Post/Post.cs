@@ -13,25 +13,25 @@ using System.Threading.Tasks;
 
 namespace Domain.Entity.Post
 {
-	[Table("Post")]
-	public class Post : BaseEntity
-	{
-		public int Id { get; set; }
+    [Table("Post")]
+    public class Post : BaseEntity
+    {
+        public int Id { get; set; }
 
-		//[Required(ErrorMessage = "Title is required")]
-		public string? Title { get; set; }
-		public string? PhotoName { get; set; }
+        //[Required(ErrorMessage = "Title is required")]
+        public string? Title { get; set; }
+        public string? PhotoName { get; set; }
 
-		[ForeignKey("UserId")]
-		public Guid UserId { get; set; }
+        [ForeignKey("UserId")]
+        public Guid UserId { get; set; }
 
-		[JsonIgnore]
-		public User User { get; set; }
+        [JsonIgnore]
+        public User User { get; set; }
 
-		[NotMapped]
-		/*[Required(ErrorMessage = "Photo is required")]*/
+        [NotMapped]
+        /*[Required(ErrorMessage = "Photo is required")]*/
 
-		[JsonIgnore]
-		public IFormFile? PhotoUrl { get; set; }
-	}
+        [JsonIgnore]
+        public IFormFile? PhotoUrl { get; set; }
+    }
 }

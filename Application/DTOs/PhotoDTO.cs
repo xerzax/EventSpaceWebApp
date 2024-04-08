@@ -11,7 +11,6 @@ namespace Application.DTOs
 	{
 		public string? Title { get; set; }
 		public string? Tags { get; set; }
-		public IFormFile Photo { get; set; }
 		public string PhotoName { get; set; }
 
 	}

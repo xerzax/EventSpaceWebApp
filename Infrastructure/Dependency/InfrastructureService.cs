@@ -36,11 +36,11 @@ namespace Infrastructure.Dependency
 			services.AddScoped<IEmailService, EmailService>();
 			services.AddScoped<ITodoService, TodoService>();
 			services.AddScoped<ITierService, TierService>();
-
 			services.AddScoped<ITicketService, TicketService>();
+            services.AddScoped<IYoutubeService, YouTubeService>();
 
 
-			return services;
+            return services;
 		}
 
 	}
