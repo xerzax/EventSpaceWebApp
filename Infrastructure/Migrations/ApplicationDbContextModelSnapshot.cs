@@ -22,6 +22,42 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Domain.Entity.Comment.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("BlogId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PhotoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PostType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlogId");
+
+                    b.HasIndex("PhotoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comment");
+                });
+
             modelBuilder.Entity("Domain.Entity.Event.Donation", b =>
                 {
                     b.Property<int>("Id")
@@ -185,6 +221,26 @@ namespace Infrastructure.Migrations
                     b.ToTable("Tiers");
                 });
 
+            modelBuilder.Entity("Domain.Entity.Follow.UserFollowings", b =>
+                {
+                    b.Property<Guid>("FollowerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FollowingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("FollowerId", "FollowingId");
+
+                    b.HasIndex("FollowingId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserFollowings");
+                });
+
             modelBuilder.Entity("Domain.Entity.Post.Blog", b =>
                 {
                     b.Property<int>("Id")
@@ -222,41 +278,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Blog");
-                });
-
-            modelBuilder.Entity("Domain.Entity.Post.Like", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("BlogId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PhotoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PostType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BlogId");
-
-                    b.HasIndex("PhotoId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Domain.Entity.Post.Photo", b =>
@@ -685,6 +706,29 @@ namespace Infrastructure.Migrations
                     b.ToTable("Tokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entity.Comment.Comment", b =>
+                {
+                    b.HasOne("Domain.Entity.Post.Blog", "Blog")
+                        .WithMany()
+                        .HasForeignKey("BlogId");
+
+                    b.HasOne("Domain.Entity.Post.Photo", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId");
+
+                    b.HasOne("EventSpaceApi.Domain.Entity.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blog");
+
+                    b.Navigation("Photo");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entity.Event.Donation", b =>
                 {
                     b.HasOne("Domain.Entity.Event.Event", "Event")
@@ -718,7 +762,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entity.Event.EventWishlist", b =>
                 {
                     b.HasOne("Domain.Entity.Event.Event", "Event")
-                        .WithMany("EventWishlists")
+                        .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -745,6 +789,29 @@ namespace Infrastructure.Migrations
                     b.Navigation("Event");
                 });
 
+            modelBuilder.Entity("Domain.Entity.Follow.UserFollowings", b =>
+                {
+                    b.HasOne("EventSpaceApi.Domain.Entity.Identity.User", "Follower")
+                        .WithMany("Followings")
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EventSpaceApi.Domain.Entity.Identity.User", "Following")
+                        .WithMany()
+                        .HasForeignKey("FollowingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EventSpaceApi.Domain.Entity.Identity.User", null)
+                        .WithMany("Followers")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Follower");
+
+                    b.Navigation("Following");
+                });
+
             modelBuilder.Entity("Domain.Entity.Post.Blog", b =>
                 {
                     b.HasOne("EventSpaceApi.Domain.Entity.Identity.User", "User")
@@ -752,29 +819,6 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Entity.Post.Like", b =>
-                {
-                    b.HasOne("Domain.Entity.Post.Blog", "Blog")
-                        .WithMany()
-                        .HasForeignKey("BlogId");
-
-                    b.HasOne("Domain.Entity.Post.Photo", "Photo")
-                        .WithMany()
-                        .HasForeignKey("PhotoId");
-
-                    b.HasOne("EventSpaceApi.Domain.Entity.Identity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Blog");
-
-                    b.Navigation("Photo");
 
                     b.Navigation("User");
                 });
@@ -895,14 +939,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entity.Event.Event", b =>
                 {
-                    b.Navigation("EventWishlists");
-
                     b.Navigation("Tiers");
                 });
 
             modelBuilder.Entity("Domain.Entity.Post.Playlist", b =>
                 {
                     b.Navigation("Songs");
+                });
+
+            modelBuilder.Entity("EventSpaceApi.Domain.Entity.Identity.User", b =>
+                {
+                    b.Navigation("Followers");
+
+                    b.Navigation("Followings");
                 });
 #pragma warning restore 612, 618
         }

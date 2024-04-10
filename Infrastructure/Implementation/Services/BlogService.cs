@@ -25,29 +25,6 @@ namespace Infrastructure.Implementation.Services
 			_userIdentityService = userIdentityService;
 			_fileService = fileService;
 		}
-        /*public async Task<Blog> AddBlogAsync(BlogDTO blog)
-		{
-			var user = _userIdentityService.GetLoggedInUser();
-
-			*//*string imageUploads = "Image";
-
-			var imageUpload = await _fileService.UploadUserFile(blog.File, imageUploads);*//*
-			if (user == null)
-			{
-				throw new Exception("User is not logged in.");
-			}
-
-			var blogToAdd = new Blog()
-			{
-				Content = blog.Content,
-				CreatedAt = DateTime.Now,
-				PhotoName = blog.PhotoName,
-				Title = blog.Title,
-				UserId = user.UserId,
-			};
-			var isAdded = await _blogRepository.AddAsync(blogToAdd);
-			return isAdded;
-		}*/
 
         public async Task<Blog> AddBlogAsync(BlogDTO blog)
         {
@@ -89,6 +66,7 @@ namespace Infrastructure.Implementation.Services
 				{
 					Title = blog.Title,
 					Content = blog.Content,
+					PhotoName = blog.PhotoName
 				};
 				result.Add(getAllBlogs);
 			}
@@ -102,6 +80,7 @@ namespace Infrastructure.Implementation.Services
 			{
 				Content = blogById.Content,
 				Title = blogById.Title,
+				PhotoName= blogById.PhotoName
 			};
 			return result;
 		}

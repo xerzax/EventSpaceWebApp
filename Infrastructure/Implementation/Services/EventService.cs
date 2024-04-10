@@ -50,7 +50,9 @@ namespace Infrastructure.Implementation.Services
 					TotalSeats = evt.TotalSeats,
 					SoldSeats = evt.SoldSeats,
 					AmountRaised = evt.AmountRaised,
-					AvailableSeats = evt.AvailableSeats
+					AvailableSeats = evt.AvailableSeats,
+					EventPhoto = evt.EventPhoto,
+					
 				});
 			}
 
@@ -152,6 +154,7 @@ namespace Infrastructure.Implementation.Services
 				StartingPrice = evt.StartingPrice,
 				TotalSeats = evt.TotalSeats,
 				AvailableSeats = evt.TotalSeats,
+				EventPhoto = evt.EventPhoto,
 				UserId = user.UserId,
 			};
 			var addedEvent = await _eventRepository.AddAsync(newEvent);
@@ -180,6 +183,8 @@ namespace Infrastructure.Implementation.Services
 				Date = evt.Date,
 				StartingPrice = evt.StartingPrice,
 				TotalSeats = evt.TotalSeats,
+				EventPhoto= evt.EventPhoto,
+
 			};
 		}
 	}

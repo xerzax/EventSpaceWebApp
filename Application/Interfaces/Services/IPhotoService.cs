@@ -17,6 +17,6 @@ namespace Application.Interfaces.Services
 		Task UpdatePhotosAsync(Photo photos);
 
 /*------------------------------------------------*/
-		Task InsertPhoto(PhotoDTO photo);
+		Task<Photo> InsertPhoto(PhotoDTO photo);
 	}
 }

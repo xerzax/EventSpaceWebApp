@@ -57,20 +57,6 @@ namespace API.Controllers
 			}
 		}
 
-		/*[HttpPost("PostPhotos")]
-		public async Task<ActionResult<Photo>> AddPhotos([FromBody] Photo photos)
-		{
-			try
-			{
-				var addedPhoto = await _photoService.AddPhotosAsync(photos);
-				return CreatedAtAction(nameof(AddPhotos), new { id = addedPhoto.Id }, addedPhoto);
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, ex.Message);
-			}
-		}
-*/
 		[HttpPut("{id}")]
 		public async Task<IActionResult> UpdatePhoto(int id, [FromBody] Photo photo)
 		{
@@ -104,27 +90,18 @@ namespace API.Controllers
 		}
 
 		[HttpPost("insertPic")]
-		public async Task<IActionResult> InsertPhoto(PhotoDTO photo)
+		public async Task<ActionResult<Photo>> InsertPhoto(PhotoDTO photo)
 		{
 			try
 			{
-				await _photoService.InsertPhoto(photo);
-				var result = "Photo added!";
-				return Ok(result);
+				var addedPhoto = await _photoService.InsertPhoto(photo);
+				return CreatedAtAction(nameof(GetPhotoById), new { id = addedPhoto.Id }, addedPhoto);
 			}
 			catch (Exception ex)
 			{
 				return StatusCode(500, ex.Message);
 			}
 		}
-
-		/*[HttpPost("addPhoto")]
-		public async Task<IActionResult> PostPhoto(Photo photo)
-		{ 
-			var addPhoto = await _photoService.AddPhotosAsync(photo);
-			return Ok(addPhoto);
-		}*/
-
 	}
 }
 

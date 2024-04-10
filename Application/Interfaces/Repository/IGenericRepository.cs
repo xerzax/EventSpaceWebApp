@@ -17,6 +17,6 @@ namespace Application.Interfaces.Repository
 
 		Task<T> GetFirstOrDefault(Expression<Func<T, bool>> filter);
         Task<List<T>> Where(Expression<Func<T, bool>> filter);
-
-    }
+		Task<int> CountAsync(Expression<Func<T, bool>> predicate);
+	}
 }

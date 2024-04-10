@@ -37,9 +37,9 @@ namespace Infrastructure.Dependency
 			services.AddScoped<ITodoService, TodoService>();
 			services.AddScoped<ITierService, TierService>();
 			services.AddScoped<ITicketService, TicketService>();
-            services.AddScoped<IYoutubeService, YouTubeService>();
-
-
+			services.AddScoped<ICommentService, CommentService>();
+			services.AddScoped<IFollowService, FollowService>();
+			services.AddScoped<IYoutubeService, YouTubeService>();
             return services;
 		}
 

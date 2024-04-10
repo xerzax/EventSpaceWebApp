@@ -44,6 +44,10 @@ namespace Infrastructure.Implementation.Repository
 			return await _dbSet.FindAsync(id);
 		}
 
+		public async Task<int> CountAsync(Expression<Func<T, bool>> predicate)
+		{
+			return await _dbSet.CountAsync(predicate);
+		}
 		public async Task<T> GetFirstOrDefault(Expression<Func<T, bool>> filter)
 		{
 			try

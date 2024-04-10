@@ -21,6 +21,7 @@ namespace Application.DTOs
 		public int SoldSeats { get; set; }
 		public int AmountRaised { get; set; }
 		public int AvailableSeats { get; set; }
+		public string? EventPhoto {  get; set; }
         public List<TierDTO> TierList { get; set; }
 
     }

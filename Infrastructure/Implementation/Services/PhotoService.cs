@@ -28,23 +28,6 @@ namespace Infrastructure.Implementation.Services
 			_fileService = fileService;
 			_getUserByID = getUserByID;
 		}
-
-		/*public async Task<Photo> AddPhotosAsync(Photo photos)
-		{
-			var user = _userIdentityService.GetLoggedInUser();
-			var photoToAdd = new Photo
-			{
-				
-				CreatedAt = DateTime.Now,
-				Title = photos.Title,
-				Tags = photos.Tags,
-				UserId = user.UserId
-
-			};
-			var addedPhotos = await _photoRepository.AddAsync(photoToAdd);
-			return addedPhotos;
-		}*/
-
 		public async Task DeletePhotosAsync(int id)
 		{
 			var toDelete = await _photoRepository.GetByIdAsync(id);
@@ -61,6 +44,7 @@ namespace Infrastructure.Implementation.Services
 				{
 					Title = photo.Title,
 					Tags = photo.Tags,
+					PhotoName = photo.PhotoName
 				});
 			}
 			return result.ToList();
@@ -77,9 +61,8 @@ namespace Infrastructure.Implementation.Services
 			return result;
 		}
 
-		public async Task InsertPhoto(PhotoDTO photo)
+		public async Task<Photo> InsertPhoto(PhotoDTO photo)
 		{
-
 			var user = _userIdentityService.GetLoggedInUser();
 
 			if (user == null)
@@ -87,21 +70,18 @@ namespace Infrastructure.Implementation.Services
 				throw new Exception("User is not logged in.");
 			}
 
-			// Explicitly convert the userString to a Guid
-			/*Guid userGuid = new Guid(userString);*/
-
-			var photoModel = new Photo
+			var photoModel = new Photo()
 			{
+				
 				CreatedAt = DateTime.Now,
-				DeletedAt = DateTime.UtcNow.AddDays(7),
 				PhotoName = photo.PhotoName,
+				Tags = photo.Tags,
 				Title = photo.Title,
 				UserId = user.UserId,
-				IsDeleted = false,
-				Tags = photo.Tags,
-				LastUpdatedAt = DateTime.Now,
 			};
-			await _photoRepository.AddAsync(photoModel);
+
+			var isAdded = await _photoRepository.AddAsync(photoModel);
+			return isAdded;
 		}
 
 		public async Task UpdatePhotosAsync(Photo photos)

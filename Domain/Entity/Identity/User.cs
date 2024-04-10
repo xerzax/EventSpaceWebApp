@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Domain.Entity.Follow;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace EventSpaceApi.Domain.Entity.Identity;
@@ -14,4 +15,7 @@ public class User : IdentityUser<Guid>
     public string? State { get; set; }
 
     public string? ImageURL { get; set; }
+	public ICollection<UserFollowings> Followers { get; set; }
+
+	public ICollection<UserFollowings> Followings { get; set; }
 }
