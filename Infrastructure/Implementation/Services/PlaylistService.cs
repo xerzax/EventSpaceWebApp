@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.DTOs;
+using Application.DTOs.Playlist;
 using Application.DTOs.Post;
+using Application.DTOs.Song;
 using Application.Interfaces.Identity;
 using Application.Interfaces.Repository;
 using Application.Interfaces.Services;
@@ -79,7 +81,7 @@ namespace Infrastructure.Implementation.Services
                 Title = playlist.Title,
                 UserId = playlist.UserId,
                 UserName = playlist.UserName,
-                Songs = (List<SongDTO>)MapToSongDTOs(playlist.Songs)
+                //Songs = (List<SongDTO>)MapToSongDTOs(playlist.Songs)
             };
         }
 
@@ -139,6 +141,44 @@ namespace Infrastructure.Implementation.Services
                 await _songRepository.AddAsync(song);
             }
             return "Playlist Created Successfully";
+        }
+
+        public async Task<List<PlaylistResponseDTO>> GetAllPlaylist()
+        {
+            var user = _userIdentityService.GetLoggedInUser();
+
+            var playlists = await _playlistRepository.GetAllAsync();
+
+            var loggedInUserPlaylist = playlists.Where(x => x.UserId == user.UserId);
+
+            var result = loggedInUserPlaylist.Select(x => new PlaylistResponseDTO
+            {
+                Title = x.Title,
+            }).ToList();
+
+            return result;
+        }
+
+        public async Task<PlaylistByIdResponseDTO> GetPlaylistById(int id)
+        {
+            var playlist = await _playlistRepository.GetByIdAsync(id);
+
+            var songs = await _songRepository.GetAllAsync();
+
+            var playlistSongs = songs.Where(x => x.PlaylistId == playlist.Id)
+                             .Select(song => new SongResponseDTO
+                             {
+                                 Name = song.Title,
+                                 VideoCode = song.VideoCode
+                             })
+                             .ToList();
+
+            var result = new PlaylistByIdResponseDTO
+            {
+                Title = playlist.Title,
+                Songs = playlistSongs
+            };
+            return result;
         }
     }
 }

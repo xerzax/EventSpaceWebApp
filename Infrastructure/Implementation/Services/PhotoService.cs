@@ -42,6 +42,7 @@ namespace Infrastructure.Implementation.Services
 			{
 				result.Add(new PhotoDTO
 				{
+					Id = photo.Id,
 					Title = photo.Title,
 					Tags = photo.Tags,
 					PhotoName = photo.PhotoName

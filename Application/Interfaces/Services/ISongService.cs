@@ -12,6 +12,9 @@ namespace Application.Interfaces.Services
 	{
         Task<IEnumerable<SongDTO>> GetAllSongsAsync();
         Task<SongDTO> GetSongByIdAsync(int id);
+
+        Task<List<SongDTO>> GetSongByIdPlaylistAsync(int id);
+
         Task<Song> AddSongAsync(Song song);
         Task DeleteSongAsync(int id);
         Task UpdateSongAsync(Song song);

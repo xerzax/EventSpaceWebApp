@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Playlist;
 using Application.DTOs.Post;
 using Domain.Entity.Post;
 using System;
@@ -18,5 +19,9 @@ namespace Application.Interfaces.Services
         Task UpdatePlaylistAsync(Playlist playlist);
 
         Task<string> CreatePlaylist(string Title, List<SongDRequestTO> selectedSongs);
+
+        Task<List<PlaylistResponseDTO>> GetAllPlaylist();
+
+        Task<PlaylistByIdResponseDTO> GetPlaylistById(int id);
     }
 }

@@ -19,7 +19,7 @@ namespace API.Controllers
 			_commentServices = likeServices;
 		}
 
-		[HttpPost]
+		[HttpPost("PostComment")]
 
 		public async Task<IActionResult> CommentPost(CommentRequestDTO request)
 		{

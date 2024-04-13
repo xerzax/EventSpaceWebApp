@@ -12,6 +12,6 @@ namespace Application.DTOs
 		public string Title { get; set; }
 		public Guid UserId { get; set; }
 		public string UserName { get; set; }
-		public List<SongDTO> Songs { get; set; }
+		//public List<SongDTO> Songs { get; set; }
 	}
 }

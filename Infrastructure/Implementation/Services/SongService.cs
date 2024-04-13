@@ -63,6 +63,29 @@ namespace Infrastructure.Implementation.Services
             return result;
         }
 
+        public async Task<List<SongDTO>> GetSongByIdPlaylistAsync(int id)
+        {
+            List<SongDTO> songsList = new List<SongDTO>();
+            var  songs = await _songRepository.Where(x => x.PlaylistId == id);
+            foreach(var song in songs)
+            {
+                songsList.Add(new SongDTO
+                {
+                    Id = song.Id,
+                    Title = song.Title,
+                    VideoCode = song.VideoCode,
+                    PlaylistId = song.PlaylistId,
+                });
+
+            }
+
+            return songsList;
+
+
+
+
+        }
+
         public async Task UpdateSongAsync(Song song)
         {
             var songToUpdate = await _songRepository.GetByIdAsync(song.Id);

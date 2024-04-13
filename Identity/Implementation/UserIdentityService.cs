@@ -199,6 +199,7 @@ namespace Identity.Implementation
             var tokenHandler = new JwtSecurityTokenHandler();
             var keyApp = _config["Jwt:Key"];
             var key = Encoding.ASCII.GetBytes(keyApp);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]

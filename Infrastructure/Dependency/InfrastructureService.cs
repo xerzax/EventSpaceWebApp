@@ -40,6 +40,8 @@ namespace Infrastructure.Dependency
 			services.AddScoped<ICommentService, CommentService>();
 			services.AddScoped<IFollowService, FollowService>();
 			services.AddScoped<IYoutubeService, YouTubeService>();
+            services.AddScoped<ISongService, SongService>();
+
             return services;
 		}
 

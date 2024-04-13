@@ -14,12 +14,15 @@ namespace API.Controllers
     public class PlaylistController : ControllerBase
     {
         private readonly IPlaylistService _playlistService;
+        private readonly ISongService _songService;
+
         private readonly IYoutubeService _youtubeService;
 
-        public PlaylistController(IPlaylistService playlistService, IYoutubeService youtubeService)
+        public PlaylistController(IPlaylistService playlistService, IYoutubeService youtubeService, ISongService songService)
         {
             _playlistService = playlistService;
             _youtubeService = youtubeService;
+            _songService = songService;
         }
 
         [HttpGet("GetAllPlaylist")]
@@ -30,7 +33,7 @@ namespace API.Controllers
         }
 
         [HttpGet("GetPlaylistById")]
-        public async Task<IActionResult> GetPlaylistById(int id)
+        public async Task<IActionResult> GetPlaylistById1(int id)
         {
             try
             {
@@ -40,6 +43,24 @@ namespace API.Controllers
                     return NotFound();
                 }
                 return Ok(playlistbById);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+		[HttpGet("GetSongsByPlaylist/{id}")]
+		public async Task<IActionResult> GetSongsByPlaylist(int id)
+        {
+            try
+            {
+                var songs = await _songService.GetSongByIdPlaylistAsync(id);
+                if (songs == null)
+                {
+                    return NotFound();
+                }
+                return Ok(songs);
             }
             catch (Exception ex)
             {
@@ -116,6 +137,22 @@ namespace API.Controllers
         public async Task<IActionResult> CreatePlaylist(PlaylistRequestDTO playlist)
         {
             var result = await _playlistService.CreatePlaylist(playlist.Title, playlist.VideoList);
+            return Ok(result);
+        }
+
+
+        [HttpGet("get-all-playlist")]
+        public async Task<IActionResult> GetAllPlayList()
+        {
+            var result = await _playlistService.GetAllPlaylist();
+            return Ok(result);
+        }
+
+        [HttpGet("get-playlist-by-id")]
+        public async Task<IActionResult> GetPlaylistById(int id)
+        {
+            var result = await _playlistService.GetPlaylistById(id);
+
             return Ok(result);
         }
     }

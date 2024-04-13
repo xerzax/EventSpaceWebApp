@@ -64,6 +64,7 @@ namespace Infrastructure.Implementation.Services
 			{
 				var getAllBlogs = new BlogDTO()
 				{
+					Id = blog.Id,
 					Title = blog.Title,
 					Content = blog.Content,
 					PhotoName = blog.PhotoName
