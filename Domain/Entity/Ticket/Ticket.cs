@@ -9,6 +9,12 @@ namespace Domain.Entity.Ticket
 	public class Ticket
 	{
 		public int Id { get; set; }
+
+		public string TicketCode { get; set; }
+
+		public string PaymentStatus { get; set; } = "Created";
+
+
 		public int Qty { get; set; }
 		public int TotalPrice { get; set; }
 		public Boolean isConfirmed { get; set; } = false;

@@ -16,5 +16,14 @@ namespace Application.Interfaces.Services
 
 		Task<TicketResponseDTO> BuyTicketsAsync(TicketRequestDTO ticketRequestDTO);
 
-	}
+		Task<bool> CreateTicket(CreateTicketDTO ticketRequestDTO);
+
+        Task<bool> ConfirmTicket(string code);
+
+
+
+
+
+
+    }
 }
