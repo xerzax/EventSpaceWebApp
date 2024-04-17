@@ -13,5 +13,8 @@ namespace Application.Interfaces.Services
 		Task SendEmail(EmailActionDto emailAction);
 		Task SendTicketPurchaseConfirmationEmail(TicketResponseDTO ticketResponseDTO, string userEmail);
 
+		Task SendQrCheck(string userEmail,string image);
+
+
 	}
 }

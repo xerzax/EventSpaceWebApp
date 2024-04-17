@@ -20,7 +20,6 @@ namespace Infrastructure.Implementation.Services
     public class TicketService : ITicketService
     {
         private readonly IGenericRepository<Tier> _tierRepo;
-
         private readonly IGenericRepository<Ticket> _ticketRepo;
         private readonly IUserIdentityService _userIdentity;
         private readonly IGenericRepository<Event> _eventRepo;
@@ -43,9 +42,9 @@ namespace Infrastructure.Implementation.Services
         {
             var user = _userIdentity.GetLoggedInUser();
 
+            var appUser = await _userManager.FindByIdAsync(user.UserId.ToString());
             var @event = await _eventRepo.GetByIdAsync(ticketRequestDTO.EventId);
 
-            var appUser = await _userManager.FindByIdAsync(user.UserId.ToString());
 
             var totalPrice = ticketRequestDTO.Qty * @event.StartingPrice;
 
@@ -93,7 +92,11 @@ namespace Infrastructure.Implementation.Services
 
         public async Task<bool> ConfirmTicket(string code)
         {
-            var ticket = await _ticketRepo.GetFirstOrDefault(x => x.TicketCode == code);
+			var user = _userIdentity.GetLoggedInUser();
+
+			var appUser = await _userManager.FindByIdAsync(user.UserId.ToString());
+
+			var ticket = await _ticketRepo.GetFirstOrDefault(x => x.TicketCode == code);
             if (ticket == null)
             {
                 return false;
@@ -132,6 +135,17 @@ namespace Infrastructure.Implementation.Services
 
             }
 
+			var ticketResponse = new TicketResponseDTO
+			{
+				Qty = ticket.Qty,
+				TotalPrice = ticket.TotalPrice,
+				isConfirmed = ticket.isConfirmed, 
+				TierName = ticket.TierName,
+				TicketType = ticket.TicketType,
+				Venue = ticket.Venue,
+				Eventdate = ticket.Eventdate
+			};
+			await _emailService.SendTicketPurchaseConfirmationEmail(ticketResponse, appUser.Email);
 
             return true;
         }

@@ -11,6 +11,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using ZXing.QrCode.Internal;
+using ZXing;
+using ZXing.Common;
+using ZXing.QrCode;
+using System.Drawing;
 
 namespace Infrastructure.Implementation.Services
 {
@@ -27,6 +37,7 @@ namespace Infrastructure.Implementation.Services
 		{
 			try
 			{
+
 				var client = new MailjetClient(_emailOption.ApiKey, _emailOption.SecretKey);
 
 				// Construct the HTML email body with the confirmation link
@@ -112,6 +123,7 @@ namespace Infrastructure.Implementation.Services
 		{
 			try
 			{
+
 				var client = new MailjetClient(_emailOption.ApiKey, _emailOption.SecretKey);
 
 				// Construct the HTML email body with the ticket details
@@ -201,7 +213,97 @@ namespace Infrastructure.Implementation.Services
 			}
 		}
 
+		public async Task SendQrCheck(string userEmail, string image)
+		{
+			try
+			{
+
+				var client = new MailjetClient(_emailOption.ApiKey, _emailOption.SecretKey);
+
+				string emailBody = $@"
+            <!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Ticket Purchase Confirmation</title>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        background-color: #eeeeee;
+                        padding: 20px;
+                    }}
+                    .ticket-container {{
+                        background-color: white;
+                        border: 1px solid #ccc;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        padding: 20px;
+                        max-width: 600px;
+                        margin: 0 auto;
+                    }}
+                    .ticket-details {{
+                        border-bottom: 2px solid darkred;
+                        padding-bottom: 10px;
+                        margin-bottom: 20px;
+                    }}
+                    .ticket-details h2 {{
+                        font-size: 24px;
+                        margin-bottom: 10px;
+                        color: darkred;
+                    }}
+                    .ticket-details p {{
+                        margin: 5px 0;
+                        color: black;
+                    }}
+                    .thank-you {{
+                        font-size: 18px;
+                        color: black;
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class='ticket-container'>
+                    <div class='ticket-details'>
+                        <h2>Ticket Details</h2>
+                          <h2>QR Code</h2>
+            <img src='data:image/png;base64,{image}' alt='QR Code'>
+                      
+                    </div>
+                    <p class='thank-you'>Thank you for purchasing the tickets! We appreciate your support.</p>
+                </div>
+            </body>
+            </html>
+        ";
+
+				var request = new MailjetRequest
+				{
+					Resource = Send.Resource,
+				}.Property(Send.Messages, new JArray {
+			new JObject {
+				{ "FromEmail", "ritika.shrestha707@gmail.com" },
+				{ "FromName", "EventSpace" },
+				{ "Recipients", new JArray {
+					new JObject {
+						{ "Email", userEmail },
+						{ "Name", userEmail }
+					}
+				}},
+				{ "Subject", "Ticket Purchase Confirmation" },
+				{ "Text-part", "Thank you for purchasing the tickets! We appreciate your support." },
+				{ "Html-part", emailBody }
+			}
+		});
+
+				MailjetResponse response = await client.PostAsync(request);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+		}
 	}
 }
+
 
 

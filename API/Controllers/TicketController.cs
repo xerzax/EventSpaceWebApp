@@ -3,11 +3,13 @@ using Application.DTOs.Ticket;
 using Application.Interfaces.Identity;
 using Application.Interfaces.Services;
 using Domain.Entity.Ticket;
+using Infrastructure.Implementation.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
+using ZXing.QrCode.Internal;
 
 namespace API.Controllers
 {
@@ -15,20 +17,26 @@ namespace API.Controllers
 	[ApiController]
 	public class TicketController : ControllerBase
 	{
+		private readonly IEmailService _emailService;
+
 		private readonly ITicketService _ticketService;
 		private readonly IEventService _eventService;
 		private readonly IUserIdentityService _idenityService;
 
 		private readonly ITierService _tierService;
+		private readonly IQRCodeGeneratorService _qrCoder;
 
 
 
-		public TicketController(ITicketService ticketService, IEventService eventService, IUserIdentityService idenityService, ITierService tierService)
+
+		public TicketController(ITicketService ticketService, IEventService eventService, IUserIdentityService idenityService, ITierService tierService, IQRCodeGeneratorService qrCoder, IEmailService emailService)
 		{
 			_ticketService = ticketService;
 			_eventService = eventService;
 			_idenityService = idenityService;
 			_tierService = tierService;
+			_qrCoder = qrCoder;
+			_emailService = emailService;
 		}
 
 		[Authorize]
@@ -39,8 +47,49 @@ namespace API.Controllers
 			return Ok(result);
 		}
 
+		[HttpGet("GenerateQRCheck")]
 
-        [HttpPost("Confirm/{ticketCode}")]
+
+		public async Task<IActionResult> GenerateQRCheck()
+		{
+
+
+
+			CreateTicketDTO ticket = new CreateTicketDTO()
+			{
+
+				TicketCode = "t123",
+				Qty = 2,
+				TotalPrice = 200,
+				EventId = 1,
+				TierName = "Abc",
+				UserId = new Guid(),
+				Venue = "Ktm",
+				Date = "2024-10-9=09"
+
+			};
+
+			string ticketInfoJson = Newtonsoft.Json.JsonConvert.SerializeObject(ticket);
+			byte[] qrAsBytes = _qrCoder.GenerateQRCode(ticketInfoJson);
+			string base64Image = Convert.ToBase64String(qrAsBytes);
+
+
+			//string imageHtml = $"<img src='data:image/png;base64,{base64Image}' alt='QR Code' height='300' width='300'>";
+			//string imageHtml = $"<img src='data:image/png;base64,{base64Image}' alt='QR Code' height='300' width='300'>";
+
+			await _emailService.SendQrCheck("ritikashrestha426@gmail.com", base64Image);
+
+			return Ok();
+
+
+
+		}
+
+
+
+
+
+		[HttpPost("Confirm/{ticketCode}")]
         public async Task<IActionResult> Confirm(string ticketCode)
 		{
 			var res = await _ticketService.ConfirmTicket(ticketCode);
@@ -48,6 +97,10 @@ namespace API.Controllers
 
 
 		}
+
+		
+
+
 
         [HttpPost("Payment")]
         public async Task<IActionResult> Payment(PaymentRequestDTO model)
@@ -109,7 +162,15 @@ namespace API.Controllers
 
 			};
 
+			string email = "test@khalti.com";
+
 			var res = await _ticketService.CreateTicket(ticket);
+
+			if (!String.IsNullOrEmpty(model.Email))
+			{
+				email = model.Email;
+			}
+
 
 			if (res)
 			{
@@ -119,13 +180,13 @@ namespace API.Controllers
 				{
 					return_url = "https://localhost:7096/ticketPurchase",
 					website_url = "https://localhost:7096/ticketPurchase",
-					amount = price ,
+					amount = price * 100,
 					purchase_order_id = ticketId,
 					purchase_order_name = name,
 					customer_info = new
 					{
 						name = user.UserName,
-						email = "test@khalti.com",
+						email = email,
 						phone = "9800000001"
 					}
 				};
@@ -141,6 +202,52 @@ namespace API.Controllers
 			}
 
 				return StatusCode(500, "Failed to create ticket");
+
+		}
+
+		[HttpPost("FreeTicket")]
+		public async Task<IActionResult> FreeTicket(PaymentRequestDTO model)
+		{
+			EventDTO eventDetail = new EventDTO();
+
+		
+			eventDetail = await _eventService.GetEventByIdAsync(model.EventId);
+
+
+
+		
+
+			var user = _idenityService.GetLoggedInUser();
+
+
+
+
+			Guid guid = Guid.NewGuid();
+
+
+
+			string ticketId = "T" + guid.ToString("N");
+
+			ticketId = ticketId.Substring(0, 11);
+
+
+
+			CreateTicketDTO ticket = new CreateTicketDTO()
+			{
+
+				TicketCode = ticketId,
+				Qty = 1,
+				TotalPrice = 0,
+				EventId = eventDetail.Id,
+				UserId = user.UserId,
+				Venue = eventDetail.Venue,
+				Date = eventDetail.Date.ToString()
+
+			};
+
+
+			var res = await _ticketService.CreateTicket(ticket);
+			return Ok(res);
 
 		}
 	}

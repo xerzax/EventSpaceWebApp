@@ -39,6 +39,10 @@ namespace Infrastructure.Implementation.Services
 
 			foreach (var evt in events)
 			{
+
+				var evttype = (EventType)evt.Type;
+				var name = Enum.GetName(typeof(EventType), evttype); 
+
 				eventDTOs.Add(new EventDTO
 				{
 					Id = evt.Id,
@@ -52,7 +56,8 @@ namespace Infrastructure.Implementation.Services
 					AmountRaised = evt.AmountRaised,
 					AvailableSeats = evt.AvailableSeats,
 					EventPhoto = evt.EventPhoto,
-					
+					Type = name
+
 				});
 			}
 
@@ -104,6 +109,11 @@ namespace Infrastructure.Implementation.Services
 
 			if (evt == null) return null;
 
+
+
+			var evttype = (EventType)evt.Type;
+			var name = Enum.GetName(typeof(EventType), evttype); 
+
 			return new EventDTO
 			{
 				Id = evt.Id,
@@ -116,7 +126,8 @@ namespace Infrastructure.Implementation.Services
 				SoldSeats = evt.SoldSeats,
 				AmountRaised = evt.AmountRaised,
 				AvailableSeats = evt.AvailableSeats,
-				TierList = tierDTOs
+				TierList = tierDTOs,
+				Type = name
 			};
 		}
 
@@ -156,6 +167,7 @@ namespace Infrastructure.Implementation.Services
 				AvailableSeats = evt.TotalSeats,
 				EventPhoto = evt.EventPhoto,
 				UserId = user.UserId,
+				Type = (EventType)evt.EventType
 			};
 			var addedEvent = await _eventRepository.AddAsync(newEvent);
 
