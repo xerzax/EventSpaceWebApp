@@ -15,6 +15,9 @@ using Microsoft.Extensions.Configuration;
 using Application.Interfaces.Repository;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
+using Application.Interfaces.Services;
+using Application.DTOs.Email;
+using Microsoft.Win32;
 
 namespace Identity.Implementation
 {
@@ -27,9 +30,12 @@ namespace Identity.Implementation
         private readonly IGenericRepository<User> _genericRepo;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
+        private readonly IEmailService _emailService;
 
 
-        public UserIdentityService(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager, IConfiguration config, IGenericRepository<User> genericRepo, IHttpContextAccessor httpContextAccessor)
+
+
+        public UserIdentityService(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager, IConfiguration config, IGenericRepository<User> genericRepo, IHttpContextAccessor httpContextAccessor, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -37,6 +43,7 @@ namespace Identity.Implementation
             _config = config;
             _genericRepo = genericRepo;
             _httpContextAccessor = httpContextAccessor;
+            _emailService = emailService;
         }
 
         public async Task<Tuple<string, string>> Register(RegisterDto register, string? returnUrl = null)
@@ -239,6 +246,40 @@ namespace Identity.Implementation
                 return user;
             }
             return null;
+        }
+
+        public async Task<bool> ConfirmOrganizer(string email)
+        {
+            try
+            {
+                var user = await _genericRepo.GetFirstOrDefault(x => x.Email == email);
+
+                user.EmailConfirmed = true;
+
+                await _genericRepo.UpdateAsync(user);
+
+                if (user == null)
+                {
+                    return false;
+                }
+
+                EmailActionDto emailObj = new EmailActionDto()
+                {
+                    Email = email,
+                    Subject = "Welcome To EventSpace",
+                };
+                await _emailService.SendEmail(emailObj);
+
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
     }
 }

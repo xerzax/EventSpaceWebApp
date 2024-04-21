@@ -20,4 +20,25 @@ namespace Application.DTOs.Event_DTO
         public int AvailableSeats { get; set; }
 
     }
+    public class EventCategory
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class TicketsSoldByCategory
+    {
+        public string CategoryName { get; set; }
+        public int TicketsSold { get; set; }
+    }
+
+    public class TicketsSoldByEvent
+    {
+        public string Name { get; set; }
+        public int TicketsSold { get; set; }
+        public int TotalTickets { get; set; }
+        public int AvailableTickets { get; set; }
+
+
+    }
 }

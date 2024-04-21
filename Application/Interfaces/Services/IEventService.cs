@@ -16,5 +16,14 @@ namespace Application.Interfaces.Services
 		Task UpdateFundAsync(int id, int amount,int qty);
 		Task<IEnumerable<EventDTO>> GetAllEventAsync();
 		Task<EventRequestDTO> CreateEventByAsync(EventRequestDTO evt);
-	}
+
+		Task<List<TicketsSoldByCategory>> GetTicketsSoldByCategory();
+        Task<List<EventDTO>> GetTicketsSoldByOrganizer();
+
+        Task<TicketsSoldByEvent> GetTicketsSoldByEvent(int eventId);
+
+        
+
+
+    }
 }

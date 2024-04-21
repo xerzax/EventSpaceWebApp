@@ -118,8 +118,92 @@ namespace Infrastructure.Implementation.Services
 			}
 		}
 
+        public async Task SendOrganizerEmail(string email)
+        {
+            try
+            {
 
-		public async Task SendTicketPurchaseConfirmationEmail(TicketResponseDTO ticketResponseDTO, string userEmail)
+                var client = new MailjetClient(_emailOption.ApiKey, _emailOption.SecretKey);
+
+                // Construct the HTML email body with the confirmation link
+                var body = $@"
+            <!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Email Confirmation</title>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        background-color: #f9f9f9;
+                        padding: 20px;
+                    }}
+                    .confirmation-container {{
+                        background-color: #ffffff;
+                        border: 2px solid #007bff; /* Blue border */
+                        border-radius: 10px;
+                        padding: 20px;
+                        max-width: 600px;
+                        margin: 0 auto;
+                        text-align: center;
+                    }}
+                    .confirmation-message {{
+                        font-size: 18px;
+                        margin-bottom: 20px;
+                        color: #333333; /* Dark text color */
+                    }}
+                    .confirmation-link {{
+                        display: inline-block;
+                        padding: 10px 20px;
+                        background-color: #007bff; /* Blue background */
+                        color: #ffffff; /* White text color */
+                        text-decoration: none;
+                        border-radius: 5px;
+                        transition: background-color 0.3s ease;
+                    }}
+                    .confirmation-link:hover {{
+                        background-color: #0056b3; /* Darker blue on hover */
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class='confirmation-container'>
+                    <p class='confirmation-message'>Your account has been verified</p>
+                </div>
+            </body>
+            </html>
+        ";
+
+                var request = new MailjetRequest
+                {
+                    Resource = Send.Resource,
+                }.Property(Send.Messages, new JArray {
+            new JObject {
+                { "FromEmail", "ritika.shrestha707@gmail.com" },
+                { "FromName", "EventSpace" },
+                { "Recipients", new JArray {
+                    new JObject {
+                        { "Email",email },
+                        { "Name", email }
+                    }
+                }},
+                { "Subject", "Event Verse Organizer Verification" },
+                { "Text-part", "Please confirm your email address by clicking the link provided." },
+                { "Html-part", body }
+            }
+        });
+
+                MailjetResponse response = await client.PostAsync(request);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+
+        public async Task SendTicketPurchaseConfirmationEmail(TicketResponseDTO ticketResponseDTO, string userEmail)
 		{
 			try
 			{

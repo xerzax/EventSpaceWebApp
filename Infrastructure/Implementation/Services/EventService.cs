@@ -7,6 +7,8 @@ using Domain.Entity.Event;
 using Domain.Entity.Post;
 using EventVerse.Core.Enums;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Implementation.Services
 {
-	public class EventService : IEventService
+    public class EventService : IEventService
 	{
 		private readonly IGenericRepository<Tier> _tierRepository;
 		private readonly IFileService _fileService;
@@ -199,5 +201,71 @@ namespace Infrastructure.Implementation.Services
 
 			};
 		}
-	}
+
+      
+        public async Task<List<TicketsSoldByCategory>> GetTicketsSoldByCategory()
+        {
+            var eventsQueryable = await _eventRepository.GetAllAsync();
+
+            var eventsSoldByCategory = eventsQueryable
+                .GroupBy(e => e.Type)
+                .Select(g => new TicketsSoldByCategory
+                {
+                    CategoryName = Enum.GetName(g.Key.GetType(), g.Key),
+                    TicketsSold = g.Sum(e => e.SoldSeats)
+                });
+
+            return eventsSoldByCategory.ToList();
+        }
+
+        public async Task<TicketsSoldByEvent> GetTicketsSoldByEvent(int eventId)
+        {
+            var eventsQueryable = await _eventRepository.GetByIdAsync(eventId);
+
+			return new TicketsSoldByEvent()
+			{
+				Name = eventsQueryable.Name,
+				TicketsSold = eventsQueryable.SoldSeats,
+				AvailableTickets = eventsQueryable.AvailableSeats
+			};
+
+
+        }
+
+        public async Task<List<EventDTO>> GetTicketsSoldByOrganizer()
+        {
+			var user = _userIdentityService.GetLoggedInUser();
+            var eventDTOs = new List<EventDTO>();
+
+            var eventsQueryable = await _eventRepository.Where(x=> x.UserId == user.UserId);
+            foreach (var evt in eventsQueryable)
+            {
+
+                var evttype = (EventType)evt.Type;
+                var name = Enum.GetName(typeof(EventType), evttype);
+
+                eventDTOs.Add(new EventDTO
+                {
+                    Id = evt.Id,
+                    Name = evt.Name,
+                    Venue = evt.Venue,
+                    Date = evt.Date,
+                    Artist = evt.Artist,
+                    StartingPrice = evt.StartingPrice,
+                    TotalSeats = evt.TotalSeats,
+                    SoldSeats = evt.SoldSeats,
+                    AmountRaised = evt.AmountRaised,
+                    AvailableSeats = evt.AvailableSeats,
+                    EventPhoto = evt.EventPhoto,
+                    Type = name
+
+                });
+            }
+
+            return eventDTOs;
+
+
+
+        }
+    }
 }

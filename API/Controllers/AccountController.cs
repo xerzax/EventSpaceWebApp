@@ -27,31 +27,49 @@ public class AccountController : ControllerBase
 	public async Task<IActionResult> Register([FromBody] RegisterDto register)
 	{
 		var result = await _userIdentityService.Register(register);
-		
-		//var url = Url.Link("ConfirmEmail", new { userId = result.Item1, code = result.Item2 });
-		var url = Url.Action("ConfirmEmail", "Account", new { userId = result.Item1, code = result.Item2 }, Request.Scheme);
 
-
-		EmailActionDto email = new EmailActionDto()
+		if (!register.Role.Equals("organizer"))
 		{
-			Email = register.Email,
-			Subject = "Welcome To EventSpace",
-			Url = url
-		};
-		await _emailSender.SendEmail(email);
+
+			var url = Url.Action("ConfirmEmail", "Account", new { userId = result.Item1, code = result.Item2 }, Request.Scheme);
 
 
-		if (string.IsNullOrEmpty(result.Item1) || string.IsNullOrEmpty(result.Item2))
-		{
-			return BadRequest("Registration failed.");
+			EmailActionDto email = new EmailActionDto()
+			{
+				Email = register.Email,
+				Subject = "Welcome To EventSpace",
+				Url = url
+			};
+			await _emailSender.SendEmail(email);
+
+
+			if (string.IsNullOrEmpty(result.Item1) || string.IsNullOrEmpty(result.Item2))
+			{
+				return BadRequest("Registration failed.");
+			}
+
+			return Ok(new { UserId = result.Item1, Code = result.Item2 });
 		}
+        return Ok(new { UserId = result.Item1, Code = result.Item2 });
 
-		return Ok(new { UserId = result.Item1, Code = result.Item2 });
-	}
+    }
 
-	
+    [HttpGet("verify-organizer/{email}")]
+    public async Task<IActionResult> ConfirmEmail(string email)
+    {
+        var result = await _userIdentityService.ConfirmOrganizer(email);
 
-	[HttpGet("confirm-email")]
+        if (!result)
+        {
+            return BadRequest("Email confirmation failed.");
+        }
+
+        return Ok("Email successfully confirmed.");
+    }
+
+
+
+    [HttpGet("confirm-email")]
 	public async Task<IActionResult> ConfirmEmail([FromQuery] Guid userId, [FromQuery] string code)
 	{
 		var result = await _userIdentityService.ConfirmEmail(userId, code);

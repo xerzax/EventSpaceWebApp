@@ -13,10 +13,12 @@ namespace Application.Interfaces.Identity
 		Task<Tuple<string, string>> Register(RegisterDto register, string? returnUrl = null);
 
 		Task<bool> ConfirmEmail(Guid userId, string code);
+        Task<bool> ConfirmOrganizer(string email);
 
 
 
-		Task<LoginResponseDTO> Login(LoginDto login, string? returnUrl = null);
+
+        Task<LoginResponseDTO> Login(LoginDto login, string? returnUrl = null);
 
 		Task LogOut();
 

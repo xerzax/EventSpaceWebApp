@@ -66,5 +66,28 @@ namespace API.Controllers
 			var createdEvent = await _eventService.CreateEventByAsync(evt);
 			return Ok(createdEvent);
 		}
-	}
+
+        [HttpGet("GetEventByCategory")]
+        public async Task<IActionResult> GetEventByCategory()
+        {
+            var createdEvent = await _eventService.GetTicketsSoldByCategory();
+            return Ok(createdEvent);
+        }
+
+        [HttpGet("GetEventByOrganizer)]
+        public async Task<IActionResult> GetEventByOrganizer()
+        {
+            var createdEvent = await _eventService.GetTicketsSoldByOrganizer();
+            return Ok(createdEvent);
+        }
+
+
+        [HttpGet("GetTicketsSoldByEvent/{id}")]
+        public async Task<IActionResult> GetTicketsSoldByEvent(int id)
+        {
+            var createdEvent = await _eventService.GetTicketsSoldByEvent(id);
+            return Ok(createdEvent);
+        }
+
+    }
 }
