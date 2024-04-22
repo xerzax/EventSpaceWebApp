@@ -1,6 +1,4 @@
-﻿
-
-using Domain.Entity.Comment;
+﻿using Domain.Entity.Comment;
 using Domain.Entity.Event;
 using Domain.Entity.Follow;
 using Domain.Entity.Post;

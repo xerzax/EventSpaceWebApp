@@ -12,8 +12,8 @@ namespace API.Controllers
 	public class EventController : ControllerBase
 	{
 		private readonly ITierService _tierService;
-
 		private readonly IEventService _eventService;
+
 
 		public EventController(IEventService eventService, ITierService tierService)
 		{
@@ -74,7 +74,7 @@ namespace API.Controllers
             return Ok(createdEvent);
         }
 
-        [HttpGet("GetEventByOrganizer)]
+        [HttpGet("GetEventByOrganizer")]
         public async Task<IActionResult> GetEventByOrganizer()
         {
             var createdEvent = await _eventService.GetTicketsSoldByOrganizer();

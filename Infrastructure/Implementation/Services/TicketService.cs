@@ -90,7 +90,7 @@ namespace Infrastructure.Implementation.Services
 
         }
 
-        public async Task<bool> ConfirmTicket(string code)
+        public async Task<bool> ConfirmTicket(string code,string email)
         {
 			var user = _userIdentity.GetLoggedInUser();
 
@@ -145,7 +145,16 @@ namespace Infrastructure.Implementation.Services
 				Venue = ticket.Venue,
 				Eventdate = ticket.Eventdate
 			};
-			await _emailService.SendTicketPurchaseConfirmationEmail(ticketResponse, appUser.Email);
+            if(!String.IsNullOrEmpty(email) && email !="null")
+            {
+                await _emailService.SendTicketPurchaseConfirmationEmail(ticketResponse, email);
+
+            }
+            else
+            {
+                await _emailService.SendTicketPurchaseConfirmationEmail(ticketResponse, appUser.Email);
+
+            }
 
             return true;
         }

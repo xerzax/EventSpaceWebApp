@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Sockets;
 using System.Text;
 using ZXing.QrCode.Internal;
 
@@ -21,7 +22,10 @@ namespace API.Controllers
 
 		private readonly ITicketService _ticketService;
 		private readonly IEventService _eventService;
-		private readonly IUserIdentityService _idenityService;
+
+        private readonly IDonationService _donationService;
+
+        private readonly IUserIdentityService _idenityService;
 
 		private readonly ITierService _tierService;
 		private readonly IQRCodeGeneratorService _qrCoder;
@@ -29,17 +33,18 @@ namespace API.Controllers
 
 
 
-		public TicketController(ITicketService ticketService, IEventService eventService, IUserIdentityService idenityService, ITierService tierService, IQRCodeGeneratorService qrCoder, IEmailService emailService)
-		{
-			_ticketService = ticketService;
-			_eventService = eventService;
-			_idenityService = idenityService;
-			_tierService = tierService;
-			_qrCoder = qrCoder;
-			_emailService = emailService;
-		}
+        public TicketController(ITicketService ticketService, IEventService eventService, IUserIdentityService idenityService, ITierService tierService, IQRCodeGeneratorService qrCoder, IEmailService emailService, IDonationService donationService)
+        {
+            _ticketService = ticketService;
+            _eventService = eventService;
+            _idenityService = idenityService;
+            _tierService = tierService;
+            _qrCoder = qrCoder;
+            _emailService = emailService;
+            _donationService = donationService;
+        }
 
-		[Authorize]
+        [Authorize]
 		[HttpPost("buy-tickets")]
 		public async Task<IActionResult> BuyTicketAsync(TicketRequestDTO ticketRequest)
 		{
@@ -89,16 +94,65 @@ namespace API.Controllers
 
 
 
-		[HttpPost("Confirm/{ticketCode}")]
-        public async Task<IActionResult> Confirm(string ticketCode)
+		[HttpPost("Confirm/{ticketCode}/{email}")]
+        public async Task<IActionResult> Confirm(string ticketCode,string email)
 		{
-			var res = await _ticketService.ConfirmTicket(ticketCode);
+			var res = await _ticketService.ConfirmTicket(ticketCode,email);
 			return Ok(res);
 
 
 		}
 
-		
+        [HttpPost("Donate")]
+        public async Task<IActionResult> Payment(DonationRequestDTO model)
+		{
+            var eventDetail = await _eventService.GetEventByIdAsync(model.EventId);
+            var user = _idenityService.GetLoggedInUser();
+            string email = "test@khalti.com";
+            Guid guid = Guid.NewGuid();
+
+
+
+            string ticketId = "D" + guid.ToString("N");
+            string returnUrl = "https://localhost:7096/donation";
+
+
+            ticketId = ticketId.Substring(0, 11);
+			var res = await _donationService.CreateDonation(model);;
+			if (res !=null)
+			{
+
+
+				var url = "https://a.khalti.com/api/v2/epayment/initiate/";
+				var payload = new
+				{
+					return_url = returnUrl,
+					website_url = returnUrl,
+					amount = model.Amt * 100,
+					purchase_order_id = ticketId,
+					purchase_order_name = "Donation",
+					customer_info = new
+					{
+						name = user.UserName,
+						email = email,
+						phone = "9800000001"
+					}
+				};
+
+				var jsonPayload = JsonConvert.SerializeObject(payload);
+				var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+				var client = new HttpClient();
+				client.DefaultRequestHeaders.Add("Authorization", "key live_secret_key_68791341fdd94846a146f0457ff7b455");
+				var response = await client.PostAsync(url, content);
+				var responseContent = await response.Content.ReadAsStringAsync();
+				Console.WriteLine(responseContent);
+				return Ok(responseContent);
+
+			}
+            return StatusCode(500, "Failed to create ticket");
+
+
+        }
 
 
 
@@ -165,11 +219,17 @@ namespace API.Controllers
 			string email = "test@khalti.com";
 
 			var res = await _ticketService.CreateTicket(ticket);
+            string returnUrl = "https://localhost:7096/ticketPurchase";
 
-			if (!String.IsNullOrEmpty(model.Email))
+
+            if (!String.IsNullOrEmpty(model.Email))
 			{
 				email = model.Email;
-			}
+				returnUrl = $"https://localhost:7096/giftTicket/{email}";
+
+            }
+
+
 
 
 			if (res)
@@ -178,8 +238,8 @@ namespace API.Controllers
 				var url = "https://a.khalti.com/api/v2/epayment/initiate/";
 				var payload = new
 				{
-					return_url = "https://localhost:7096/ticketPurchase",
-					website_url = "https://localhost:7096/ticketPurchase",
+					return_url = returnUrl,
+					website_url = returnUrl,
 					amount = price * 100,
 					purchase_order_id = ticketId,
 					purchase_order_name = name,

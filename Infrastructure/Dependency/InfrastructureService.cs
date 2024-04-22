@@ -42,6 +42,8 @@ namespace Infrastructure.Dependency
 			services.AddScoped<IYoutubeService, YouTubeService>();
 			services.AddScoped<IQRCodeGeneratorService, QRCodeGeneratorService>();
             services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IDonationService, DonationService>();
+
 
 
             services.AddScoped<ISongService, SongService>();

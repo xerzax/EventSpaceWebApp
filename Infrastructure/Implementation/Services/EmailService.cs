@@ -40,7 +40,6 @@ namespace Infrastructure.Implementation.Services
 
 				var client = new MailjetClient(_emailOption.ApiKey, _emailOption.SecretKey);
 
-				// Construct the HTML email body with the confirmation link
 				emailAction.Body = $@"
             <!DOCTYPE html>
             <html lang='en'>

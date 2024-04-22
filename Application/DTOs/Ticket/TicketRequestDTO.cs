@@ -16,6 +16,9 @@ namespace Application.DTOs.Ticket
 		public int Qty { get; set; }
 		
 		public string? TierName { get; set; }
+
+		public string? Email { get; set; }
+
 		public int EventId { get; set; }
 
 	}
@@ -48,10 +51,21 @@ namespace Application.DTOs.Ticket
         public int EventId { get; set; }
 		public int Qty { get; set; } = 1;
 
-		public string Email  { get; set; } 
+		public string? Email  { get; set; } 
 
 
 	}
+
+    public class DonationRequestDTO
+    {
+
+
+        public int EventId { get; set; }
+        public int Amt { get; set; } 
+
+
+
+    }
 
 
 

@@ -14,4 +14,11 @@ namespace Application.DTOs
 		public int EventId { get; set; }
 
 	}
+
+    public class DonationResponseDTO
+    {
+        public int AmountDonated { get; set; }
+        public string EventName { get; set; }
+
+    }
 }

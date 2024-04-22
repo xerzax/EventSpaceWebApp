@@ -66,12 +66,13 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAny",
+    options.AddPolicy("AllowSpecificOrigin",
         builder => builder
-            .AllowAnyOrigin()
+            .WithOrigins("https://localhost:7096") 
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
+
 
 var app = builder.Build();
 
@@ -88,7 +89,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();;
 app.UseAuthorization();
-app.UseCors("AllowAny");
+app.UseCors("AllowSpecificOrigin");
 
 app.MapControllers();
 app.UseEndpoints(endpoints =>
