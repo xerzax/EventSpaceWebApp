@@ -20,7 +20,7 @@ var configuration = builder.Configuration;
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseSqlServer(connectionString));
-// Add services to the container.
+// Adding services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddIdentityService(configuration);

@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Net.Sockets;
 using System.Text;
 using ZXing.QrCode.Internal;
+using static QRCoder.PayloadGenerator;
 
 namespace API.Controllers
 {
@@ -265,6 +266,7 @@ namespace API.Controllers
 
 		}
 
+		[Authorize]
 		[HttpPost("FreeTicket")]
 		public async Task<IActionResult> FreeTicket(PaymentRequestDTO model)
 		{
@@ -307,7 +309,17 @@ namespace API.Controllers
 
 
 			var res = await _ticketService.CreateTicket(ticket);
-			return Ok(res);
+
+			if(res)
+			{
+				await _ticketService.SendFreeticket(ticket);
+			}
+
+
+
+
+		
+            return Ok(new {Message="Free ticket sent"});
 
 		}
 	}

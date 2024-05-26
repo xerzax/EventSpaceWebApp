@@ -281,6 +281,20 @@ namespace Identity.Implementation
             }
 
         }
+
+        public (string, string) GetUserDetails(Guid userId)
+        {
+            var user = _genericRepo.GetFirstOrDefault(x => x.Id == userId).Result;
+
+            return (user.Name ?? "", user.ImageURL ?? "");
+        }
+
+        public User  GetUserDetail(Guid userId)
+        {
+            var user = _genericRepo.GetFirstOrDefault(x => x.Id == userId).Result;
+            return user;
+
+        }
     }
 }
 

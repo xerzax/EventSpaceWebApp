@@ -8,7 +8,6 @@ using System.Security.Claims;
 
 namespace API.Controllers
 {
-	[Authorize]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class BlogController : ControllerBase
@@ -52,6 +51,8 @@ namespace API.Controllers
 			}
 		}
 
+		[Authorize]
+
 		[HttpPost("PostBlogs")]
 		public async Task<ActionResult<Blog>> AddBlogs(BlogDTO blog)
 		{
@@ -65,6 +66,7 @@ namespace API.Controllers
 				return StatusCode(500, ex.Message);
 			}
 		}
+		[Authorize]
 
 		[HttpPut("{id}")]
 		public async Task<IActionResult> UpdateBlogs(int id, [FromBody] Blog blog)
@@ -83,6 +85,7 @@ namespace API.Controllers
 				return StatusCode(500, ex.Message);
 			}
 		}
+		[Authorize]
 
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteBlogs(int id)

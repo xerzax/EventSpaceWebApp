@@ -21,6 +21,9 @@ namespace Application.Interfaces.Services
         Task<bool> ConfirmTicket(string code,string email);
 
 
+        Task<bool> SendFreeticket(CreateTicketDTO ticketRequestDTO);
+
+
 
 
 

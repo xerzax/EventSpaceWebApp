@@ -67,7 +67,8 @@ namespace Infrastructure.Implementation.Services
 					Id = blog.Id,
 					Title = blog.Title,
 					Content = blog.Content,
-					PhotoName = blog.PhotoName
+					PhotoName = blog.PhotoName,
+					CreatedAt = blog.CreatedAt
 				};
 				result.Add(getAllBlogs);
 			}

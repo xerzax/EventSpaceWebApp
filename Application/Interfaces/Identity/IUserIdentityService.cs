@@ -27,7 +27,10 @@ namespace Application.Interfaces.Identity
 		Task<string> ResetPassword(ResetPasswordDto resetPassword);
 		string GenerateTokenString(User user);
 		UserContext GetLoggedInUser();
+        (string, string) GetUserDetails(Guid userId);
+        User GetUserDetail(Guid userId);
 
 
-	}
+
+    }
 }

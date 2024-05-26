@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.Services
 {
-	public interface IFollowService
-	{
-		Task<bool> FollowUser(Guid UserId);
-	}
+    public interface IFollowService
+    {
+        Task<bool> FollowUser(Guid UserId);
+
+        Task<bool> UnFollowUser(Guid UserId);
+    }
 }

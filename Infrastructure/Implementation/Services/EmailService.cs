@@ -21,6 +21,7 @@ using ZXing;
 using ZXing.Common;
 using ZXing.QrCode;
 using System.Drawing;
+using EventVerse.Core.Enums;
 
 namespace Infrastructure.Implementation.Services
 {
@@ -209,6 +210,7 @@ namespace Infrastructure.Implementation.Services
 
 				var client = new MailjetClient(_emailOption.ApiKey, _emailOption.SecretKey);
 
+                bool isfreeTicket = ticketResponseDTO.TicketType == EventVerse.Core.Enums.EventType.Free;
 				// Construct the HTML email body with the ticket details
 				string emailBody = $@"
             <!DOCTYPE html>
@@ -257,8 +259,10 @@ namespace Infrastructure.Implementation.Services
                     <div class='ticket-details'>
                         <h2>Ticket Details</h2>
                         <p><strong>Quantity:</strong> {ticketResponseDTO.Qty}</p>
-                        <p><strong>Total Price:</strong> {ticketResponseDTO.TotalPrice}</p>
-                        <p><strong>Tier:</strong> {ticketResponseDTO.TierName}</p>
+                         {(isfreeTicket? "<p><strong>Total Price:</strong> Free Ticket</p>" : $"<p><strong>Total Price:</strong> {ticketResponseDTO.TotalPrice}</p>")}
+                        {( !String.IsNullOrEmpty(ticketResponseDTO.TierName) ?  $"<p><strong>Total Price:</strong> Free Ticket </p>" :"")}
+
+
                         <p><strong>Event Type:</strong> {ticketResponseDTO.TicketType}</p>
                         <p><strong>Venue:</strong> {ticketResponseDTO.Venue}</p>
                         <p><strong>Event Date:</strong> {ticketResponseDTO.Eventdate}</p>

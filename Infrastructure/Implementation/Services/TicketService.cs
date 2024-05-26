@@ -6,29 +6,37 @@ using Application.Interfaces.Services;
 using Domain.Entity.Event;
 using Domain.Entity.Ticket;
 using EventSpaceApi.Domain.Entity.Identity;
+using EventVerse.Core.Enums;
 using Infrastructure.Implementation.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using static QRCoder.PayloadGenerator;
 
 namespace Infrastructure.Implementation.Services
 {
     public class TicketService : ITicketService
     {
         private readonly IGenericRepository<Tier> _tierRepo;
+
         private readonly IGenericRepository<Ticket> _ticketRepo;
         private readonly IUserIdentityService _userIdentity;
         private readonly IGenericRepository<Event> _eventRepo;
         private readonly UserManager<User> _userManager;
         private readonly IEmailService _emailService;
+        private readonly IEventService _eventService;
 
 
 
-        public TicketService(IGenericRepository<Ticket> ticketRepo, IUserIdentityService userIdentity, IGenericRepository<Event> eventRepo, UserManager<User> userManager, IEmailService emailService, IGenericRepository<Tier> tierRepo)
+
+
+
+        public TicketService(IGenericRepository<Ticket> ticketRepo, IUserIdentityService userIdentity, IGenericRepository<Event> eventRepo, UserManager<User> userManager, IEmailService emailService, IGenericRepository<Tier> tierRepo, IEventService eventService)
         {
             _ticketRepo = ticketRepo;
             _userIdentity = userIdentity;
@@ -36,6 +44,7 @@ namespace Infrastructure.Implementation.Services
             _userManager = userManager;
             _emailService = emailService;
             _tierRepo = tierRepo;
+            _eventService = eventService;
         }
 
         public async Task<TicketResponseDTO> BuyTicketsAsync(TicketRequestDTO ticketRequestDTO)
@@ -141,7 +150,7 @@ namespace Infrastructure.Implementation.Services
 				TotalPrice = ticket.TotalPrice,
 				isConfirmed = ticket.isConfirmed, 
 				TierName = ticket.TierName,
-				TicketType = ticket.TicketType,
+				TicketType = EventType.Paid,
 				Venue = ticket.Venue,
 				Eventdate = ticket.Eventdate
 			};
@@ -181,6 +190,51 @@ namespace Infrastructure.Implementation.Services
 
 
 
+
+        }
+
+        public async Task<bool> SendFreeticket(CreateTicketDTO ticketRequestDTO)
+        {
+            var user = _userIdentity.GetLoggedInUser();
+
+            var userId = user.UserId;
+
+            var userDetail = _userIdentity.GetUserDetail(userId);
+
+
+
+
+
+
+
+
+            var eventDetail = await _eventRepo.GetByIdAsync(ticketRequestDTO.EventId);
+
+
+            if (eventDetail != null)
+            {
+                eventDetail.SoldSeats += 1;
+
+                eventDetail.AvailableSeats -= eventDetail.SoldSeats;
+
+                await _eventRepo.UpdateAsync(eventDetail);
+
+            }
+
+
+
+            TicketResponseDTO ticketResponseDTO = new TicketResponseDTO()
+            {
+                Qty = 1,
+                Eventdate = eventDetail.Date.ToShortDateString(),
+                TotalPrice = 0,
+                isConfirmed = true,
+                Venue = eventDetail.Venue,
+                TicketType = EventType.Free,
+            };
+
+            await _emailService.SendTicketPurchaseConfirmationEmail(ticketResponseDTO, userDetail.Email);
+            return true;
 
         }
 

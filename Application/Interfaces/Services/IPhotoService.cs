@@ -10,7 +10,7 @@ namespace Application.Interfaces.Services
 {
 	public interface IPhotoService
 	{
-		Task<IEnumerable<PhotoDTO>> GetAllPhotosAsync();
+		Task<IEnumerable<PhotoDetailsDTO>> GetAllPhotosAsync();
 		Task<PhotoDTO> GetByPhotoIdAsync(int id);
 	/*	Task<Photo> AddPhotosAsync(Photo photos);*/
 		Task DeletePhotosAsync(int id);

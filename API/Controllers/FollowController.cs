@@ -17,8 +17,7 @@ namespace API.Controllers
 			_followService = followService;
 		}
 
-		[HttpPost]
-
+		[HttpPost("follow-user")]
 		public async Task<IActionResult> FollowUser(Guid UserId)
 		{
 			var result = await _followService.FollowUser(UserId);
@@ -29,5 +28,17 @@ namespace API.Controllers
 			}
 			return Ok("Failed to follow user");
 		}
-	}
+
+        [HttpPost("unfollow-user")]
+        public async Task<IActionResult> UnFollowUser(Guid UserId)
+        {
+            var result = await _followService.UnFollowUser(UserId);
+
+            if (result == true)
+            {
+                return Ok("User Followed");
+            }
+            return Ok("Failed to follow user");
+        }
+    }
 }

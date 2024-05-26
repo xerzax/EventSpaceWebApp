@@ -10,7 +10,6 @@ using System.Reflection.Metadata;
 
 namespace API.Controllers
 {
-	[Authorize]
 
 	[Route("api/[controller]")]
 	[ApiController]
@@ -57,6 +56,8 @@ namespace API.Controllers
 			}
 		}
 
+		[Authorize]
+
 		[HttpPut("{id}")]
 		public async Task<IActionResult> UpdatePhoto(int id, [FromBody] Photo photo)
 		{
@@ -74,6 +75,7 @@ namespace API.Controllers
 				return StatusCode(500, ex.Message);
 			}
 		}
+		[Authorize]
 
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeletePhotoById(int id)
@@ -88,6 +90,8 @@ namespace API.Controllers
 				return StatusCode(500, ex.Message);
 			}
 		}
+		[Authorize]
+
 
 		[HttpPost("insertPic")]
 		public async Task<ActionResult<Photo>> InsertPhoto(PhotoDTO photo)
